@@ -3,7 +3,7 @@ class AdminSession {
   AdminSession._();
   static final instance = AdminSession._();
 
-  String name = 'Emma Johnson';
+  String name = 'Kesta Wealth';
   String role = 'Super Admin';
 
   /// Permission keys granted to this admin. A Super Admin has every key.

@@ -10,39 +10,58 @@ class ChartSeries {
     required this.color,
     required this.values,
     this.fill = false,
+    this.dashed = false,
+    this.secondary = false,
+    this.format,
   });
 
   final String name;
   final Color color;
   final List<double> values;
   final bool fill;
+  final bool dashed;
+
+  /// Plotted against the right-hand axis (its own scale).
+  final bool secondary;
+
+  /// Value formatter for the tooltip and the axis this series uses.
+  final String Function(double)? format;
 }
 
-/// Smooth multi-series line chart with gridlines, area fill and a hover tooltip.
+/// Multi-series line chart: gridlines, optional area fill, dashed series,
+/// an optional right axis and a hover tooltip.
 class LineChart extends StatefulWidget {
   const LineChart({
     super.key,
     required this.series,
     required this.labels,
     this.height = 240,
-    this.format,
+    this.smooth = false,
   });
 
   final List<ChartSeries> series;
   final List<String> labels;
   final double height;
-  final String Function(double)? format;
+  final bool smooth;
 
   @override
   State<LineChart> createState() => _LineChartState();
 }
 
+double _niceMax(double v) {
+  if (v <= 0) return 1;
+  final mag = math.pow(10, (math.log(v) / math.ln10).floor()).toDouble();
+  final n = v / mag;
+  final nice = n <= 1 ? 1 : n <= 2 ? 2 : n <= 2.5 ? 2.5 : n <= 5 ? 5 : 10;
+  return nice * mag;
+}
+
 class _LineChartState extends State<LineChart> {
   int? _hover;
 
-  double get _max {
+  double _maxFor(bool secondary) {
     var m = 0.0;
-    for (final s in widget.series) {
+    for (final s in widget.series.where((s) => s.secondary == secondary)) {
       for (final v in s.values) {
         m = math.max(m, v);
       }
@@ -50,40 +69,31 @@ class _LineChartState extends State<LineChart> {
     return _niceMax(m);
   }
 
-  static double _niceMax(double v) {
-    if (v <= 0) return 1;
-    final mag = math.pow(10, (math.log(v) / math.ln10).floor()).toDouble();
-    final n = v / mag;
-    final nice = n <= 1 ? 1 : n <= 2 ? 2 : n <= 2.5 ? 2.5 : n <= 5 ? 5 : 10;
-    return nice * mag;
-  }
-
-  String _fmt(double v) =>
-      widget.format?.call(v) ?? compactNumber(v);
-
   @override
   Widget build(BuildContext context) {
     final count = widget.series.first.values.length;
-    final max = _max;
-    const leftPad = 40.0;
+    final hasRight = widget.series.any((s) => s.secondary);
+    const leftPad = 46.0;
+    final rightPad = hasRight ? 40.0 : 6.0;
     const bottomPad = 26.0;
     return SizedBox(
       height: widget.height,
       child: LayoutBuilder(builder: (context, c) {
-        final plotW = c.maxWidth - leftPad;
+        final plotW = c.maxWidth - leftPad - rightPad;
         double xAt(int i) => leftPad + (count == 1 ? 0 : plotW * i / (count - 1));
+        int indexAt(double dx) {
+          final x = (dx - leftPad).clamp(0, plotW);
+          return (x / plotW * (count - 1)).round();
+        }
+
         return MouseRegion(
           onExit: (_) => setState(() => _hover = null),
           onHover: (e) {
-            final dx = (e.localPosition.dx - leftPad).clamp(0, plotW);
-            final i = (dx / plotW * (count - 1)).round();
+            final i = indexAt(e.localPosition.dx);
             if (i != _hover) setState(() => _hover = i);
           },
           child: GestureDetector(
-            onTapDown: (e) {
-              final dx = (e.localPosition.dx - leftPad).clamp(0, plotW);
-              setState(() => _hover = (dx / plotW * (count - 1)).round());
-            },
+            onTapDown: (e) => setState(() => _hover = indexAt(e.localPosition.dx)),
             child: Stack(
               clipBehavior: Clip.none,
               children: [
@@ -92,20 +102,22 @@ class _LineChartState extends State<LineChart> {
                     painter: _LinePainter(
                       series: widget.series,
                       labels: widget.labels,
-                      max: max,
+                      maxLeft: _maxFor(false),
+                      maxRight: hasRight ? _maxFor(true) : 1,
                       leftPad: leftPad,
+                      rightPad: rightPad,
                       bottomPad: bottomPad,
                       hover: _hover,
-                      fmt: _fmt,
+                      smooth: widget.smooth,
                     ),
                   ),
                 ),
                 if (_hover != null)
                   Positioned(
-                    left: (xAt(_hover!) + 12 + 170 > c.maxWidth)
-                        ? xAt(_hover!) - 182
-                        : xAt(_hover!) + 12,
-                    top: 8,
+                    left: (xAt(_hover!) + 14 + 180 > c.maxWidth)
+                        ? xAt(_hover!) - 194
+                        : xAt(_hover!) + 14,
+                    top: 6,
                     child: IgnorePointer(child: _tooltip(_hover!)),
                   ),
               ],
@@ -118,14 +130,14 @@ class _LineChartState extends State<LineChart> {
 
   Widget _tooltip(int i) {
     return Container(
-      width: 170,
-      padding: const EdgeInsets.all(10),
+      width: 180,
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: AppColors.border),
         boxShadow: const [
-          BoxShadow(color: Color(0x1A2C0951), blurRadius: 16, offset: Offset(0, 6)),
+          BoxShadow(color: Color(0x14111827), blurRadius: 16, offset: Offset(0, 6)),
         ],
       ),
       child: Column(
@@ -137,7 +149,7 @@ class _LineChartState extends State<LineChart> {
           const SizedBox(height: 6),
           for (final s in widget.series)
             Padding(
-              padding: const EdgeInsets.only(top: 3),
+              padding: const EdgeInsets.only(top: 4),
               child: Row(children: [
                 Container(
                   width: 8,
@@ -147,11 +159,12 @@ class _LineChartState extends State<LineChart> {
                 const SizedBox(width: 6),
                 Expanded(
                   child: Text(s.name,
+                      overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
-                          fontSize: 12, color: AppColors.textSecondary)),
+                          fontSize: 11.5, color: AppColors.textSecondary)),
                 ),
-                Text(_fmt(s.values[i]),
-                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+                Text((s.format ?? compactNumber)(s.values[i]),
+                    style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w600)),
               ]),
             ),
         ],
@@ -164,54 +177,75 @@ class _LinePainter extends CustomPainter {
   _LinePainter({
     required this.series,
     required this.labels,
-    required this.max,
+    required this.maxLeft,
+    required this.maxRight,
     required this.leftPad,
+    required this.rightPad,
     required this.bottomPad,
     required this.hover,
-    required this.fmt,
+    required this.smooth,
   });
 
   final List<ChartSeries> series;
   final List<String> labels;
-  final double max;
+  final double maxLeft;
+  final double maxRight;
   final double leftPad;
+  final double rightPad;
   final double bottomPad;
   final int? hover;
-  final String Function(double) fmt;
+  final bool smooth;
+
+  int _divisions(double max) {
+    final mag = math.pow(10, (math.log(max) / math.ln10).floor()).toDouble();
+    final lead = (max / mag).round();
+    return (lead == 2 || lead == 4) ? 4 : 5;
+  }
 
   @override
   void paint(Canvas canvas, Size size) {
-    final plotW = size.width - leftPad;
+    final plotW = size.width - leftPad - rightPad;
     final plotH = size.height - bottomPad;
     final count = series.first.values.length;
     double x(int i) => leftPad + (count == 1 ? 0 : plotW * i / (count - 1));
-    double y(double v) => plotH - (v / max) * (plotH - 8);
+    double y(double v, double max) => plotH - (v / max) * (plotH - 8);
 
-    // Gridlines and y labels.
+    final leftFmt =
+        series.firstWhere((s) => !s.secondary, orElse: () => series.first).format ??
+            compactNumber;
+    final rightSeries = series.where((s) => s.secondary).toList();
+    final rightFmt =
+        rightSeries.isEmpty ? compactNumber : (rightSeries.first.format ?? compactNumber);
+
+    final divisions = _divisions(maxLeft);
     final grid = Paint()
       ..color = AppColors.border
       ..strokeWidth = 1;
-    final mag = math.pow(10, (math.log(max) / math.ln10).floor()).toDouble();
-    final lead = (max / mag).round();
-    final divisions = lead == 2 ? 4 : lead == 4 ? 4 : 5;
     for (var g = 0; g <= divisions; g++) {
-      final v = max * g / divisions;
-      final gy = y(v);
-      canvas.drawLine(Offset(leftPad, gy), Offset(size.width, gy), grid);
-      _text(canvas, fmt(v), Offset(0, gy - 7), 10.5, AppColors.textSecondary,
-          width: leftPad - 6, align: TextAlign.right);
+      final gy = y(maxLeft * g / divisions, maxLeft);
+      _dashedLine(canvas, Offset(leftPad, gy), Offset(size.width - rightPad, gy), grid,
+          dash: 4, gap: 4);
+      _text(canvas, leftFmt(maxLeft * g / divisions), Offset(0, gy - 7), 10.5,
+          AppColors.textSecondary,
+          width: leftPad - 8, align: TextAlign.right);
+      if (rightSeries.isNotEmpty) {
+        _text(canvas, rightFmt(maxRight * g / divisions),
+            Offset(size.width - rightPad + 6, gy - 7), 10.5, AppColors.textSecondary,
+            width: rightPad - 6);
+      }
     }
 
-    // X labels (thinned so they never collide).
     final step = math.max(1, (count / math.max(1, plotW / 70)).ceil());
     for (var i = 0; i < count; i += step) {
-      _text(canvas, labels[i], Offset(x(i) - 30, plotH + 8), 10.5,
-          AppColors.textSecondary, width: 60, align: TextAlign.center);
+      _text(canvas, labels[i], Offset(x(i) - 30, plotH + 9), 10.5,
+          AppColors.textSecondary,
+          width: 60, align: TextAlign.center);
     }
 
     for (final s in series) {
-      final pts = [for (var i = 0; i < count; i++) Offset(x(i), y(s.values[i]))];
-      final path = _smooth(pts);
+      final max = s.secondary ? maxRight : maxLeft;
+      final pts = [for (var i = 0; i < count; i++) Offset(x(i), y(s.values[i], max))];
+      final path = smooth ? _smooth(pts) : _straight(pts);
       if (s.fill) {
         final area = Path.from(path)
           ..lineTo(pts.last.dx, plotH)
@@ -223,35 +257,47 @@ class _LinePainter extends CustomPainter {
             ..shader = LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [s.color.withValues(alpha: 0.28), s.color.withValues(alpha: 0.0)],
+              colors: [s.color.withValues(alpha: 0.18), s.color.withValues(alpha: 0.0)],
             ).createShader(Rect.fromLTWH(0, 0, size.width, plotH)),
         );
       }
-      canvas.drawPath(
-        path,
-        Paint()
-          ..color = s.color
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 2.6
-          ..strokeCap = StrokeCap.round,
-      );
+      final paint = Paint()
+        ..color = s.color
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = s.dashed ? 1.8 : 2.4
+        ..strokeJoin = StrokeJoin.round
+        ..strokeCap = StrokeCap.round;
+      if (s.dashed) {
+        for (var i = 0; i < pts.length - 1; i++) {
+          _dashedLine(canvas, pts[i], pts[i + 1], paint, dash: 6, gap: 5);
+        }
+        for (final p in pts) {
+          canvas.drawCircle(p, 2.6, Paint()..color = s.color);
+        }
+      } else {
+        canvas.drawPath(path, paint);
+        if (!smooth) {
+          for (final p in pts) {
+            canvas.drawCircle(p, 3, Paint()..color = s.color);
+          }
+        }
+      }
     }
 
     if (hover != null) {
       final hx = x(hover!);
-      canvas.drawLine(
-        Offset(hx, 4),
-        Offset(hx, plotH),
-        Paint()
-          ..color = AppColors.brand.withValues(alpha: 0.35)
-          ..strokeWidth = 1,
-      );
+      _dashedLine(canvas, Offset(hx, 4), Offset(hx, plotH),
+          Paint()
+            ..color = AppColors.textMuted
+            ..strokeWidth = 1,
+          dash: 3,
+          gap: 3);
       for (final s in series) {
-        final p = Offset(hx, y(s.values[hover!]));
-        canvas.drawCircle(p, 5.5, Paint()..color = Colors.white);
+        final p = Offset(hx, y(s.values[hover!], s.secondary ? maxRight : maxLeft));
+        canvas.drawCircle(p, 6, Paint()..color = Colors.white);
         canvas.drawCircle(
           p,
-          5.5,
+          6,
           Paint()
             ..color = s.color
             ..style = PaintingStyle.stroke
@@ -259,6 +305,14 @@ class _LinePainter extends CustomPainter {
         );
       }
     }
+  }
+
+  Path _straight(List<Offset> p) {
+    final path = Path()..moveTo(p.first.dx, p.first.dy);
+    for (final o in p.skip(1)) {
+      path.lineTo(o.dx, o.dy);
+    }
+    return path;
   }
 
   Path _smooth(List<Offset> p) {
@@ -277,7 +331,20 @@ class _LinePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_LinePainter old) =>
-      old.hover != hover || old.series != series || old.max != max;
+      old.hover != hover || old.series != series;
+}
+
+void _dashedLine(Canvas canvas, Offset a, Offset b, Paint paint,
+    {double dash = 5, double gap = 4}) {
+  final total = (b - a).distance;
+  if (total == 0) return;
+  final dir = (b - a) / total;
+  var d = 0.0;
+  while (d < total) {
+    final end = math.min(d + dash, total);
+    canvas.drawLine(a + dir * d, a + dir * end, paint);
+    d = end + gap;
+  }
 }
 
 /// Donut chart with a centred total.
@@ -327,7 +394,7 @@ class _DonutPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final total = values.fold<double>(0, (a, b) => a + b);
     if (total <= 0) return;
-    const stroke = 20.0;
+    const stroke = 22.0;
     final rect = Rect.fromLTWH(stroke / 2, stroke / 2, size.width - stroke,
         size.height - stroke);
     var start = -math.pi / 2;

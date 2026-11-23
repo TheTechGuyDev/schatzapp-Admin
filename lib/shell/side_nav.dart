@@ -4,9 +4,10 @@ import 'package:material_ui/material_ui.dart';
 import '../core/modules.dart';
 import '../core/session.dart';
 import '../theme/app_colors.dart';
+import '../widgets/avatar.dart';
 
-/// Deep purple admin side nav. `expanded` = full labels (desktop and phone
-/// drawer); collapsed = icons only (tablet).
+/// White admin side nav. `expanded` = full labels (desktop and phone drawer);
+/// collapsed = icon rail (tablet).
 class SideNav extends StatelessWidget {
   const SideNav({
     super.key,
@@ -25,14 +26,17 @@ class SideNav extends StatelessWidget {
     final visible = adminModules.where((m) => session.can(m.permission)).toList();
 
     return Container(
-      width: expanded ? 280 : 84,
-      color: AppColors.sidebar,
+      width: expanded ? 252 : 80,
+      decoration: const BoxDecoration(
+        color: AppColors.sidebar,
+        border: Border(right: BorderSide(color: AppColors.border)),
+      ),
       child: SafeArea(
         child: Column(children: [
           _Brand(expanded: expanded),
           Expanded(
             child: ListView(
-              padding: EdgeInsets.fromLTRB(expanded ? 18 : 14, 8, expanded ? 18 : 14, 12),
+              padding: EdgeInsets.fromLTRB(expanded ? 14 : 12, 6, expanded ? 14 : 12, 12),
               children: [
                 for (final section in NavSection.values)
                   ..._section(context, section,
@@ -50,17 +54,18 @@ class SideNav extends StatelessWidget {
       BuildContext context, NavSection section, List<AdminModule> items) {
     if (items.isEmpty) return const [];
     return [
-      Padding(
-        padding: EdgeInsets.fromLTRB(expanded ? 8 : 0, 20, 0, 10),
-        child: expanded
-            ? Text(section.label,
-                style: const TextStyle(
-                    color: Color(0x99FFFFFF),
-                    fontSize: 11,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 1.6))
-            : const Divider(color: Color(0x22FFFFFF), height: 1),
-      ),
+      if (section.label.isNotEmpty)
+        Padding(
+          padding: EdgeInsets.fromLTRB(expanded ? 10 : 0, 18, 0, 8),
+          child: expanded
+              ? Text(section.label,
+                  style: const TextStyle(
+                      color: AppColors.textSecondary,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 0.6))
+              : const Divider(color: AppColors.border, height: 1),
+        ),
       for (final m in items)
         _NavItem(
           module: m,
@@ -82,31 +87,26 @@ class _Brand extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final logo = Image.asset('assets/images/logo.png', width: 42, height: 46);
+    final logo = Image.asset('assets/images/logo.png', width: 40, height: 44);
     if (!expanded) {
-      return Padding(padding: const EdgeInsets.only(top: 26, bottom: 8), child: logo);
+      return Padding(
+          padding: const EdgeInsets.only(top: 20, bottom: 10), child: logo);
     }
     return Padding(
-      padding: const EdgeInsets.fromLTRB(26, 28, 20, 8),
+      padding: const EdgeInsets.fromLTRB(22, 20, 16, 10),
       child: Row(children: [
         logo,
-        const SizedBox(width: 14),
-        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          ShaderMask(
-            shaderCallback: (r) => const LinearGradient(
-              colors: [Colors.white, AppColors.brand, AppColors.magenta],
-              stops: [0, 0.55, 1],
-            ).createShader(r),
-            child: const Text('SchatzApp',
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 27,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: -0.3)),
-          ),
-          const SizedBox(height: 2),
-          const Text('Secure . Verify . Trust',
-              style: TextStyle(color: Color(0xDDFFFFFF), fontSize: 12)),
+        const SizedBox(width: 12),
+        const Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text('SchatzApp',
+              style: TextStyle(
+                  color: AppColors.text,
+                  fontSize: 19,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: -0.3)),
+          SizedBox(height: 1),
+          Text('Admin Panel',
+              style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
         ]),
       ]),
     );
@@ -138,6 +138,7 @@ class _NavItemState extends State<_NavItem> {
   @override
   Widget build(BuildContext context) {
     final active = widget.active;
+    final fg = active ? AppColors.brand : AppColors.navText;
     final item = MouseRegion(
       cursor: SystemMouseCursors.click,
       onEnter: (_) => setState(() => _hover = true),
@@ -145,57 +146,43 @@ class _NavItemState extends State<_NavItem> {
       child: GestureDetector(
         onTap: widget.onTap,
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 160),
-          height: 46,
-          margin: const EdgeInsets.symmetric(vertical: 3),
-          padding: EdgeInsets.symmetric(horizontal: widget.expanded ? 14 : 0),
+          duration: const Duration(milliseconds: 140),
+          height: 42,
+          margin: const EdgeInsets.symmetric(vertical: 2),
+          padding: EdgeInsets.symmetric(horizontal: widget.expanded ? 12 : 0),
           decoration: BoxDecoration(
             color: active
-                ? const Color(0x14FFFFFF)
+                ? AppColors.brandSoft
                 : _hover
-                    ? const Color(0x0FFFFFFF)
+                    ? AppColors.hover
                     : Colors.transparent,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: active ? AppColors.magenta : Colors.transparent,
-              width: 1.4,
-            ),
-            boxShadow: active
-                ? [
-                    BoxShadow(
-                      color: AppColors.magenta.withValues(alpha: 0.45),
-                      blurRadius: 12,
-                    ),
-                  ]
-                : null,
+            borderRadius: BorderRadius.circular(10),
           ),
           child: widget.expanded
               ? Row(children: [
-                  Icon(widget.module.icon, color: Colors.white, size: 21),
-                  const SizedBox(width: 16),
+                  Icon(widget.module.icon, color: fg, size: 20),
+                  const SizedBox(width: 14),
                   Expanded(
                     child: Text(widget.module.label,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 14.5,
+                            color: fg,
+                            fontSize: 14,
                             fontWeight: active ? FontWeight.w600 : FontWeight.w500)),
                   ),
                   if (widget.badge != null) _Badge(widget.badge!),
                 ])
               : Stack(clipBehavior: Clip.none, children: [
-                  Center(
-                    child: Icon(widget.module.icon, color: Colors.white, size: 22),
-                  ),
+                  Center(child: Icon(widget.module.icon, color: fg, size: 21)),
                   if (widget.badge != null)
                     Positioned(
-                      right: 8,
-                      top: 6,
+                      right: 10,
+                      top: 7,
                       child: Container(
                         width: 8,
                         height: 8,
                         decoration: const BoxDecoration(
-                            color: AppColors.magenta, shape: BoxShape.circle),
+                            color: AppColors.brand, shape: BoxShape.circle),
                       ),
                     ),
                 ]),
@@ -203,13 +190,7 @@ class _NavItemState extends State<_NavItem> {
       ),
     );
     if (widget.expanded) return item;
-    return Tooltip(
-      message: widget.module.label,
-      preferBelow: false,
-      verticalOffset: 0,
-      margin: const EdgeInsets.only(left: 70),
-      child: item,
-    );
+    return Tooltip(message: widget.module.label, child: item);
   }
 }
 
@@ -222,7 +203,7 @@ class _Badge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(
-        color: AppColors.magenta,
+        color: AppColors.brand,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Text('$count',
@@ -239,33 +220,11 @@ class _AdminCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = AdminSession.instance;
-    final avatar = Stack(clipBehavior: Clip.none, children: [
-      CircleAvatar(
-        radius: 21,
-        backgroundColor: AppColors.brand,
-        child: Text(s.initial,
-            style: const TextStyle(
-                color: Colors.white, fontSize: 17, fontWeight: FontWeight.w700)),
-      ),
-      Positioned(
-        right: -1,
-        bottom: -1,
-        child: Container(
-          width: 13,
-          height: 13,
-          decoration: BoxDecoration(
-            color: AppColors.online,
-            shape: BoxShape.circle,
-            border: Border.all(color: AppColors.sidebar, width: 2),
-          ),
-        ),
-      ),
-    ]);
+    final avatar = Avatar(name: s.name, size: 42, online: true);
     return Container(
-      margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-      padding: const EdgeInsets.only(top: 16),
+      padding: EdgeInsets.fromLTRB(expanded ? 18 : 0, 14, expanded ? 14 : 0, 16),
       decoration: const BoxDecoration(
-        border: Border(top: BorderSide(color: Color(0x22FFFFFF))),
+        border: Border(top: BorderSide(color: AppColors.border)),
       ),
       child: expanded
           ? Row(children: [
@@ -276,15 +235,22 @@ class _AdminCard extends StatelessWidget {
                   Text(s.name,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600)),
-                  const SizedBox(height: 2),
+                          fontSize: 14, fontWeight: FontWeight.w600)),
+                  const SizedBox(height: 1),
                   Text(s.role,
-                      style: const TextStyle(color: Color(0xBBFFFFFF), fontSize: 12)),
+                      style: const TextStyle(
+                          color: AppColors.textSecondary, fontSize: 12)),
+                  const SizedBox(height: 3),
+                  const Row(children: [
+                    Icon(Icons.circle, size: 7, color: AppColors.online),
+                    SizedBox(width: 5),
+                    Text('Online',
+                        style: TextStyle(fontSize: 11, color: AppColors.textSecondary)),
+                  ]),
                 ]),
               ),
-              const Icon(Icons.more_vert_rounded, color: Color(0xBBFFFFFF), size: 20),
+              const Icon(Icons.keyboard_arrow_down_rounded,
+                  color: AppColors.textSecondary, size: 20),
             ])
           : Center(child: Tooltip(message: '${s.name} · ${s.role}', child: avatar)),
     );

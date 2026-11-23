@@ -12,8 +12,8 @@ class PageBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final pad = switch (Breakpoints.of(context)) {
       ScreenSize.phone => const EdgeInsets.fromLTRB(16, 18, 16, 28),
-      ScreenSize.tablet => const EdgeInsets.fromLTRB(24, 26, 24, 32),
-      ScreenSize.desktop => const EdgeInsets.fromLTRB(36, 30, 36, 40),
+      ScreenSize.tablet => const EdgeInsets.fromLTRB(22, 22, 22, 32),
+      ScreenSize.desktop => const EdgeInsets.fromLTRB(28, 24, 28, 40),
     };
     return SingleChildScrollView(
       padding: pad,

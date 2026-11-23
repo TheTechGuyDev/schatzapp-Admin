@@ -3,28 +3,30 @@ import 'package:material_ui/material_ui.dart';
 import '../features/dashboard/dashboard_page.dart';
 import '../features/placeholder/coming_soon_page.dart';
 
-/// Side nav sections, in display order.
+/// Side nav sections, in display order. `top` has no heading.
 enum NavSection {
-  main('MAIN'),
-  communication('COMMUNICATION'),
-  system('SYSTEM');
+  top(''),
+  userAccess('USER & ACCESS'),
+  finance('FINANCIAL MANAGEMENT'),
+  support('SUPPORT & OPERATIONS'),
+  system('SYSTEM & SECURITY');
 
   const NavSection(this.label);
   final String label;
 }
 
 /// One admin module. New products or sections are added by appending a
-/// module here: the shell, routes and side nav pick it up automatically.
+/// module here: the shell, routes, top bar and side nav pick it up.
 /// `permission` is the key the backend role system will check (later phase).
 class AdminModule {
   const AdminModule({
     required this.id,
     required this.label,
+    required this.subtitle,
     required this.icon,
     required this.section,
     required this.permission,
     required this.builder,
-    this.subtitle = '',
   });
 
   final String id;
@@ -38,123 +40,167 @@ class AdminModule {
   String get path => '/$id';
 }
 
-Widget _soon(String title, String phase) =>
-    ComingSoonPage(title: title, phase: phase);
+AdminModule _soon({
+  required String id,
+  required String label,
+  required String subtitle,
+  required IconData icon,
+  required NavSection section,
+  required String permission,
+  required String phase,
+}) =>
+    AdminModule(
+      id: id,
+      label: label,
+      subtitle: subtitle,
+      icon: icon,
+      section: section,
+      permission: permission,
+      builder: (_) => ComingSoonPage(title: label, phase: phase),
+    );
 
 final List<AdminModule> adminModules = [
   AdminModule(
     id: 'dashboard',
     label: 'Dashboard',
-    icon: Icons.space_dashboard_outlined,
-    section: NavSection.main,
+    subtitle: "Here's what's happening on SchatzApp today.",
+    icon: Icons.home_outlined,
+    section: NavSection.top,
     permission: 'dashboard.view',
     builder: (_) => const DashboardPage(),
   ),
-  AdminModule(
+  _soon(
     id: 'users',
     label: 'Users',
-    icon: Icons.people_outline,
-    section: NavSection.main,
+    subtitle: 'Search, monitor and investigate user accounts',
+    icon: Icons.people_alt_outlined,
+    section: NavSection.userAccess,
     permission: 'users.view',
-    builder: (_) => _soon('Users', 'Phase 3'),
+    phase: 'Phase 3',
   ),
-  AdminModule(
+  _soon(
     id: 'roles',
-    label: 'Role & Permissions',
-    icon: Icons.admin_panel_settings_outlined,
-    section: NavSection.main,
+    label: 'Roles & Permissions',
+    subtitle: 'Manage admin roles and their access permissions',
+    icon: Icons.manage_accounts_outlined,
+    section: NavSection.userAccess,
     permission: 'roles.view',
-    builder: (_) => _soon('Role & Permissions', 'Phase 11'),
+    phase: 'Phase 11',
   ),
-  AdminModule(
+  _soon(
     id: 'kyc',
     label: 'KYC Verification',
-    icon: Icons.verified_user_outlined,
-    section: NavSection.main,
+    subtitle: 'Verify user identities and manage KYC compliance',
+    icon: Icons.fact_check_outlined,
+    section: NavSection.userAccess,
     permission: 'kyc.view',
-    builder: (_) => _soon('KYC Verification', 'Phase 5'),
+    phase: 'Phase 5',
   ),
-  AdminModule(
+  _soon(
     id: 'transactions',
     label: 'Transactions',
+    subtitle: 'Monitor and trace every wallet transaction',
     icon: Icons.swap_horiz_rounded,
-    section: NavSection.main,
+    section: NavSection.finance,
     permission: 'transactions.view',
-    builder: (_) => _soon('Transactions', 'Phase 6'),
+    phase: 'Phase 6',
   ),
-  AdminModule(
+  _soon(
     id: 'wallets',
     label: 'Wallets',
+    subtitle: 'Manage user wallets and balances',
     icon: Icons.account_balance_wallet_outlined,
-    section: NavSection.main,
+    section: NavSection.finance,
     permission: 'wallets.view',
-    builder: (_) => _soon('Wallets', 'Phase 6'),
+    phase: 'Phase 6',
   ),
-  AdminModule(
+  _soon(
+    id: 'cards',
+    label: 'Cards',
+    subtitle: 'Saved payment cards and card top-ups',
+    icon: Icons.credit_card_outlined,
+    section: NavSection.finance,
+    permission: 'cards.view',
+    phase: 'Phase 6',
+  ),
+  _soon(
     id: 'airtime-data',
     label: 'Airtime & Data',
+    subtitle: 'Airtime and data purchases, networks and vendors',
     icon: Icons.cell_tower_rounded,
-    section: NavSection.main,
+    section: NavSection.finance,
     permission: 'airtime.view',
-    builder: (_) => _soon('Airtime & Data', 'Phase 6'),
+    phase: 'Phase 6',
   ),
-  AdminModule(
+  _soon(
     id: 'gift-cards',
     label: 'Gift Cards',
+    subtitle: 'Manage gift cards, orders and redemptions',
     icon: Icons.card_giftcard_outlined,
-    section: NavSection.main,
+    section: NavSection.finance,
     permission: 'giftcards.view',
-    builder: (_) => _soon('Gift Cards', 'Phase 7'),
+    phase: 'Phase 7',
   ),
-  AdminModule(
-    id: 'reports',
-    label: 'Reports',
-    icon: Icons.bar_chart_rounded,
-    section: NavSection.main,
-    permission: 'reports.view',
-    builder: (_) => _soon('Reports', 'Phase 10'),
-  ),
-  AdminModule(
+  _soon(
     id: 'disputes',
     label: 'Disputes',
-    icon: Icons.gavel_rounded,
-    section: NavSection.main,
+    subtitle: 'Complaints, disputes and investigations',
+    icon: Icons.shield_outlined,
+    section: NavSection.support,
     permission: 'disputes.view',
-    builder: (_) => _soon('Disputes', 'Phase 8'),
+    phase: 'Phase 8',
   ),
-  AdminModule(
-    id: 'notifications',
-    label: 'Notifications',
-    icon: Icons.notifications_none_rounded,
-    section: NavSection.communication,
-    permission: 'notifications.view',
-    builder: (_) => _soon('Notifications', 'Phase 9'),
-  ),
-  AdminModule(
+  _soon(
     id: 'support',
     label: 'Support Tickets',
-    icon: Icons.support_agent_rounded,
-    section: NavSection.communication,
+    subtitle: 'Manage and resolve customer support requests',
+    icon: Icons.headset_mic_outlined,
+    section: NavSection.support,
     permission: 'support.view',
-    builder: (_) => _soon('Support Tickets', 'Phase 8'),
+    phase: 'Phase 8',
   ),
-  AdminModule(
+  _soon(
+    id: 'notifications',
+    label: 'Notifications',
+    subtitle: 'Manage and send notifications to users',
+    icon: Icons.notifications_none_rounded,
+    section: NavSection.support,
+    permission: 'notifications.view',
+    phase: 'Phase 9',
+  ),
+  _soon(
+    id: 'reports',
+    label: 'Reports',
+    subtitle: 'View insights and generate reports across the platform',
+    icon: Icons.insert_chart_outlined_rounded,
+    section: NavSection.support,
+    permission: 'reports.view',
+    phase: 'Phase 10',
+  ),
+  _soon(
     id: 'audit-logs',
     label: 'Audit Logs',
-    icon: Icons.fact_check_outlined,
+    subtitle: 'Track and review all admin activities and changes',
+    icon: Icons.assignment_outlined,
     section: NavSection.system,
     permission: 'audit.view',
-    builder: (_) => _soon('Audit Logs', 'Phase 11'),
+    phase: 'Phase 11',
   ),
-  AdminModule(
+  _soon(
     id: 'settings',
     label: 'System Settings',
+    subtitle: 'Manage and configure system preferences',
     icon: Icons.settings_outlined,
     section: NavSection.system,
     permission: 'settings.view',
-    builder: (_) => _soon('System Settings', 'Phase 12'),
+    phase: 'Phase 12',
   ),
 ];
 
+AdminModule moduleFor(String location) => adminModules.firstWhere(
+      (m) => location.startsWith(m.path),
+      orElse: () => adminModules.first,
+    );
+
 /// Counts shown as small badges on nav items (sample values for the UI phase).
-const Map<String, int> navBadges = {'notifications': 12, 'support': 38};
+const Map<String, int> navBadges = {'notifications': 12};

@@ -14,8 +14,6 @@ class ComingSoonPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PageBody(children: [
-      PageHeader(title: title, subtitle: 'This section is part of $phase.'),
-      const SizedBox(height: 24),
       AppCard(
         padding: 40,
         child: Column(children: [
@@ -23,7 +21,7 @@ class ComingSoonPage extends StatelessWidget {
             width: 64,
             height: 64,
             decoration: BoxDecoration(
-              color: AppColors.muted,
+              color: AppColors.brandSoft,
               borderRadius: BorderRadius.circular(18),
             ),
             child: const Icon(Icons.construction_rounded,
