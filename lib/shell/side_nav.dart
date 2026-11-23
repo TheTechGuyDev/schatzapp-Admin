@@ -26,7 +26,7 @@ class SideNav extends StatelessWidget {
     final visible = adminModules.where((m) => session.can(m.permission)).toList();
 
     return Container(
-      width: expanded ? 252 : 80,
+      width: expanded ? 232 : 76,
       decoration: const BoxDecoration(
         color: AppColors.sidebar,
         border: Border(right: BorderSide(color: AppColors.border)),
@@ -36,7 +36,7 @@ class SideNav extends StatelessWidget {
           _Brand(expanded: expanded),
           Expanded(
             child: ListView(
-              padding: EdgeInsets.fromLTRB(expanded ? 14 : 12, 6, expanded ? 14 : 12, 12),
+              padding: EdgeInsets.fromLTRB(expanded ? 14 : 12, 4, expanded ? 14 : 12, 12),
               children: [
                 for (final section in NavSection.values)
                   ..._section(context, section,
@@ -54,18 +54,17 @@ class SideNav extends StatelessWidget {
       BuildContext context, NavSection section, List<AdminModule> items) {
     if (items.isEmpty) return const [];
     return [
-      if (section.label.isNotEmpty)
-        Padding(
-          padding: EdgeInsets.fromLTRB(expanded ? 10 : 0, 18, 0, 8),
-          child: expanded
-              ? Text(section.label,
-                  style: const TextStyle(
-                      color: AppColors.textSecondary,
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 0.6))
-              : const Divider(color: AppColors.border, height: 1),
-        ),
+      Padding(
+        padding: EdgeInsets.fromLTRB(expanded ? 10 : 0, 16, 0, 6),
+        child: expanded
+            ? Text(section.label,
+                style: const TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: 10.5,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0.5))
+            : const Divider(color: AppColors.border, height: 1),
+      ),
       for (final m in items)
         _NavItem(
           module: m,
@@ -87,16 +86,35 @@ class _Brand extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final logo = Image.asset('assets/images/logo.png', width: 40, height: 44);
+    final logo = Container(
+      width: 46,
+      height: 46,
+      padding: const EdgeInsets.all(9),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFF7B4DFF), Color(0xFF5B2BE0)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.brand.withValues(alpha: 0.25),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Image.asset('assets/images/logo_white.png'),
+    );
     if (!expanded) {
-      return Padding(
-          padding: const EdgeInsets.only(top: 20, bottom: 10), child: logo);
+      return Padding(padding: const EdgeInsets.only(top: 18, bottom: 6), child: logo);
     }
     return Padding(
-      padding: const EdgeInsets.fromLTRB(22, 20, 16, 10),
+      padding: const EdgeInsets.fromLTRB(18, 18, 14, 6),
       child: Row(children: [
         logo,
-        const SizedBox(width: 12),
+        const SizedBox(width: 10),
         const Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text('SchatzApp',
               style: TextStyle(
@@ -104,9 +122,8 @@ class _Brand extends StatelessWidget {
                   fontSize: 19,
                   fontWeight: FontWeight.w700,
                   letterSpacing: -0.3)),
-          SizedBox(height: 1),
           Text('Admin Panel',
-              style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+              style: TextStyle(color: AppColors.textSecondary, fontSize: 11.5)),
         ]),
       ]),
     );
@@ -147,40 +164,40 @@ class _NavItemState extends State<_NavItem> {
         onTap: widget.onTap,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 140),
-          height: 42,
-          margin: const EdgeInsets.symmetric(vertical: 2),
-          padding: EdgeInsets.symmetric(horizontal: widget.expanded ? 12 : 0),
+          height: 34,
+          margin: const EdgeInsets.symmetric(vertical: 1),
+          padding: EdgeInsets.symmetric(horizontal: widget.expanded ? 10 : 0),
           decoration: BoxDecoration(
             color: active
                 ? AppColors.brandSoft
                 : _hover
                     ? AppColors.hover
                     : Colors.transparent,
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(8),
           ),
           child: widget.expanded
               ? Row(children: [
-                  Icon(widget.module.icon, color: fg, size: 20),
-                  const SizedBox(width: 14),
+                  Icon(widget.module.icon, color: fg, size: 18),
+                  const SizedBox(width: 12),
                   Expanded(
                     child: Text(widget.module.label,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                             color: fg,
-                            fontSize: 14,
+                            fontSize: 13,
                             fontWeight: active ? FontWeight.w600 : FontWeight.w500)),
                   ),
                   if (widget.badge != null) _Badge(widget.badge!),
                 ])
               : Stack(clipBehavior: Clip.none, children: [
-                  Center(child: Icon(widget.module.icon, color: fg, size: 21)),
+                  Center(child: Icon(widget.module.icon, color: fg, size: 19)),
                   if (widget.badge != null)
                     Positioned(
                       right: 10,
-                      top: 7,
+                      top: 5,
                       child: Container(
-                        width: 8,
-                        height: 8,
+                        width: 7,
+                        height: 7,
                         decoration: const BoxDecoration(
                             color: AppColors.brand, shape: BoxShape.circle),
                       ),
@@ -201,14 +218,14 @@ class _Badge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 1),
       decoration: BoxDecoration(
         color: AppColors.brand,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Text('$count',
           style: const TextStyle(
-              color: Colors.white, fontSize: 11, fontWeight: FontWeight.w700)),
+              color: Colors.white, fontSize: 10.5, fontWeight: FontWeight.w700)),
     );
   }
 }
@@ -220,37 +237,34 @@ class _AdminCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = AdminSession.instance;
-    final avatar = Avatar(name: s.name, size: 42, online: true);
+    final avatar = Avatar(name: s.name, size: 40, online: !expanded);
     return Container(
-      padding: EdgeInsets.fromLTRB(expanded ? 18 : 0, 14, expanded ? 14 : 0, 16),
+      padding: EdgeInsets.fromLTRB(expanded ? 16 : 0, 14, expanded ? 14 : 0, 16),
       decoration: const BoxDecoration(
         border: Border(top: BorderSide(color: AppColors.border)),
       ),
       child: expanded
           ? Row(children: [
               avatar,
-              const SizedBox(width: 12),
+              const SizedBox(width: 10),
               Expanded(
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Text(s.name,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                          fontSize: 14, fontWeight: FontWeight.w600)),
-                  const SizedBox(height: 1),
+                      style: const TextStyle(fontSize: 13.5, fontWeight: FontWeight.w600)),
                   Text(s.role,
-                      style: const TextStyle(
-                          color: AppColors.textSecondary, fontSize: 12)),
-                  const SizedBox(height: 3),
+                      style: const TextStyle(color: AppColors.textSecondary, fontSize: 11.5)),
+                  const SizedBox(height: 4),
                   const Row(children: [
                     Icon(Icons.circle, size: 7, color: AppColors.online),
                     SizedBox(width: 5),
                     Text('Online',
-                        style: TextStyle(fontSize: 11, color: AppColors.textSecondary)),
+                        style: TextStyle(fontSize: 10.5, color: AppColors.textSecondary)),
                   ]),
                 ]),
               ),
               const Icon(Icons.keyboard_arrow_down_rounded,
-                  color: AppColors.textSecondary, size: 20),
+                  color: AppColors.textSecondary, size: 18),
             ])
           : Center(child: Tooltip(message: '${s.name} · ${s.role}', child: avatar)),
     );

@@ -3,13 +3,12 @@ import 'package:material_ui/material_ui.dart';
 import '../features/dashboard/dashboard_page.dart';
 import '../features/placeholder/coming_soon_page.dart';
 
-/// Side nav sections, in display order. `top` has no heading.
+/// Side nav sections, in display order.
 enum NavSection {
-  top(''),
-  userAccess('USER & ACCESS'),
-  finance('FINANCIAL MANAGEMENT'),
-  support('SUPPORT & OPERATIONS'),
-  system('SYSTEM & SECURITY');
+  main('MAIN'),
+  support('SUPPORT'),
+  reports('REPORTS'),
+  system('SYSTEM');
 
   const NavSection(this.label);
   final String label;
@@ -63,9 +62,9 @@ final List<AdminModule> adminModules = [
   AdminModule(
     id: 'dashboard',
     label: 'Dashboard',
-    subtitle: "Here's what's happening on SchatzApp today.",
+    subtitle: 'Monitor users, transactions and activity across SchatzApp',
     icon: Icons.home_outlined,
-    section: NavSection.top,
+    section: NavSection.main,
     permission: 'dashboard.view',
     builder: (_) => const DashboardPage(),
   ),
@@ -74,7 +73,7 @@ final List<AdminModule> adminModules = [
     label: 'Users',
     subtitle: 'Search, monitor and investigate user accounts',
     icon: Icons.people_alt_outlined,
-    section: NavSection.userAccess,
+    section: NavSection.main,
     permission: 'users.view',
     phase: 'Phase 3',
   ),
@@ -83,7 +82,7 @@ final List<AdminModule> adminModules = [
     label: 'Roles & Permissions',
     subtitle: 'Manage admin roles and their access permissions',
     icon: Icons.manage_accounts_outlined,
-    section: NavSection.userAccess,
+    section: NavSection.main,
     permission: 'roles.view',
     phase: 'Phase 11',
   ),
@@ -92,7 +91,7 @@ final List<AdminModule> adminModules = [
     label: 'KYC Verification',
     subtitle: 'Verify user identities and manage KYC compliance',
     icon: Icons.fact_check_outlined,
-    section: NavSection.userAccess,
+    section: NavSection.main,
     permission: 'kyc.view',
     phase: 'Phase 5',
   ),
@@ -101,7 +100,7 @@ final List<AdminModule> adminModules = [
     label: 'Transactions',
     subtitle: 'Monitor and trace every wallet transaction',
     icon: Icons.swap_horiz_rounded,
-    section: NavSection.finance,
+    section: NavSection.main,
     permission: 'transactions.view',
     phase: 'Phase 6',
   ),
@@ -110,7 +109,7 @@ final List<AdminModule> adminModules = [
     label: 'Wallets',
     subtitle: 'Manage user wallets and balances',
     icon: Icons.account_balance_wallet_outlined,
-    section: NavSection.finance,
+    section: NavSection.main,
     permission: 'wallets.view',
     phase: 'Phase 6',
   ),
@@ -119,17 +118,8 @@ final List<AdminModule> adminModules = [
     label: 'Cards',
     subtitle: 'Saved payment cards and card top-ups',
     icon: Icons.credit_card_outlined,
-    section: NavSection.finance,
+    section: NavSection.main,
     permission: 'cards.view',
-    phase: 'Phase 6',
-  ),
-  _soon(
-    id: 'airtime-data',
-    label: 'Airtime & Data',
-    subtitle: 'Airtime and data purchases, networks and vendors',
-    icon: Icons.cell_tower_rounded,
-    section: NavSection.finance,
-    permission: 'airtime.view',
     phase: 'Phase 6',
   ),
   _soon(
@@ -137,9 +127,18 @@ final List<AdminModule> adminModules = [
     label: 'Gift Cards',
     subtitle: 'Manage gift cards, orders and redemptions',
     icon: Icons.card_giftcard_outlined,
-    section: NavSection.finance,
+    section: NavSection.main,
     permission: 'giftcards.view',
     phase: 'Phase 7',
+  ),
+  _soon(
+    id: 'airtime-data',
+    label: 'Airtime & Data',
+    subtitle: 'Airtime and data purchases, networks and vendors',
+    icon: Icons.cell_tower_rounded,
+    section: NavSection.main,
+    permission: 'airtime.view',
+    phase: 'Phase 6',
   ),
   _soon(
     id: 'disputes',
@@ -173,7 +172,7 @@ final List<AdminModule> adminModules = [
     label: 'Reports',
     subtitle: 'View insights and generate reports across the platform',
     icon: Icons.insert_chart_outlined_rounded,
-    section: NavSection.support,
+    section: NavSection.reports,
     permission: 'reports.view',
     phase: 'Phase 10',
   ),
@@ -182,7 +181,7 @@ final List<AdminModule> adminModules = [
     label: 'Audit Logs',
     subtitle: 'Track and review all admin activities and changes',
     icon: Icons.assignment_outlined,
-    section: NavSection.system,
+    section: NavSection.reports,
     permission: 'audit.view',
     phase: 'Phase 11',
   ),

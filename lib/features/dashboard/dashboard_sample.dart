@@ -17,12 +17,21 @@ class CountryStat {
 }
 
 class TxRow {
-  const TxRow(this.user, this.type, this.amount, this.status, this.time);
+  const TxRow(this.ref, this.user, this.email, this.type, this.detail, this.amount,
+      this.fee, this.status, this.date, this.time, this.kind);
+  final String ref;
   final String user;
+  final String email;
   final String type;
+  final String detail;
   final String amount;
+  final String fee;
   final String status;
+  final String date;
   final String time;
+
+  /// transfer, airtime, data, topup, giftcard
+  final String kind;
 }
 
 enum Level { critical, warning, info, normal }
@@ -83,10 +92,10 @@ class DashboardSample {
 
   /// Volume by category in naira (30 days).
   static const txCategories = <(String, double)>[
-    ('Schatz transfers', 21.4e6),
-    ('Wallet top-ups', 12.1e6),
+    ('Transfers', 21.4e6),
+    ('Top-ups', 12.1e6),
     ('Airtime & Data', 6.8e6),
-    ('Gift cards', 5.6e6),
+    ('Gift Cards', 5.6e6),
     ('Others', 2.3e6),
   ];
 
@@ -114,11 +123,25 @@ class DashboardSample {
   ];
 
   static const transactions = <TxRow>[
-    TxRow('John Okafor', 'Schatz transfer', '₦250,000.00', 'Completed', '2m ago'),
-    TxRow('Emily Johnson', 'Airtime purchase', '₦2,500.00', 'Completed', '5m ago'),
-    TxRow('Michael Uche', 'Gift card purchase', '₦45,000.00', 'Completed', '10m ago'),
-    TxRow('Sarah Collins', 'Wallet top-up', '₦100,000.00', 'Pending', '15m ago'),
-    TxRow('David Brown', 'Data bundle', '₦7,500.00', 'Failed', '20m ago'),
+    TxRow('TXN-2026-112301', 'John Okafor', 'john.o***@gmail.com', 'Transfer',
+        'To SchatzApp user', '₦250,000.00', '₦0.00', 'Completed', 'Nov 23, 2026', '10:30 AM', 'transfer'),
+    TxRow('TXN-2026-112302', 'Emily Johnson', 'emily.j***@gmail.com', 'Airtime',
+        'MTN Nigeria', '₦2,500.00', '₦0.00', 'Completed', 'Nov 23, 2026', '09:45 AM', 'airtime'),
+    TxRow('TXN-2026-112303', 'Michael Uche', 'michael.u***@gmail.com', 'Gift Card',
+        'Schatz Gift Card', '₦45,000.00', '₦50.00', 'Completed', 'Nov 23, 2026', '09:15 AM', 'giftcard'),
+    TxRow('TXN-2026-112304', 'Sarah Collins', 'sarah.c***@gmail.com', 'Wallet Top Up',
+        'From card', '₦100,000.00', '₦100.00', 'Pending', 'Nov 23, 2026', '08:48 AM', 'topup'),
+    TxRow('TXN-2026-112305', 'David Brown', 'david.b***@gmail.com', 'Data Bundle',
+        'Airtel Nigeria', '₦7,500.00', '₦0.00', 'Failed', 'Nov 22, 2026', '07:22 PM', 'data'),
+  ];
+
+  /// Countries with the most users, for the right-hand ranking card.
+  static const topCountries = <(String, String, int, double)>[
+    ('NG', 'Nigeria', 6240, 1.0),
+    ('DE', 'Germany', 1820, 0.29),
+    ('GH', 'Ghana', 1105, 0.18),
+    ('GB', 'United Kingdom', 948, 0.15),
+    ('US', 'United States', 712, 0.11),
   ];
 
   static const attention = <AttentionItem>[

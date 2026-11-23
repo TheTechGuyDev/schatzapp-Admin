@@ -78,19 +78,17 @@ class TopBar extends StatelessWidget {
     final s = AdminSession.instance;
     final phone = size == ScreenSize.phone;
     final desktop = size == ScreenSize.desktop;
-    final isDashboard = module.id == 'dashboard';
-    final title = isDashboard ? 'Welcome back, ${s.name}' : module.label;
+    final title = module.label;
 
     return Container(
       decoration: const BoxDecoration(
         color: Colors.white,
-        border: Border(bottom: BorderSide(color: AppColors.border)),
       ),
       child: SafeArea(
         bottom: false,
         child: Padding(
-          padding: EdgeInsets.fromLTRB(phone ? 6 : 28, phone ? 8 : 16, phone ? 10 : 28,
-              phone ? 8 : 16),
+          padding: EdgeInsets.fromLTRB(phone ? 6 : 26, phone ? 8 : 14, phone ? 10 : 26,
+              phone ? 8 : 14),
           child: Row(children: [
             if (phone)
               IconButton(
@@ -100,25 +98,25 @@ class TopBar extends StatelessWidget {
               ),
             Expanded(
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(isDashboard && phone ? 'Dashboard' : title,
+                Text(title,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                        fontSize: phone ? 18 : 22,
+                        fontSize: phone ? 18 : 20,
                         fontWeight: FontWeight.w700,
                         letterSpacing: -0.3)),
                 if (!phone) ...[
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 3),
                   Text(module.subtitle,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
-                          fontSize: 13.5, color: AppColors.textSecondary)),
+                          fontSize: 13, color: AppColors.textSecondary)),
                 ],
               ]),
             ),
             const SizedBox(width: 16),
-            if (!phone) _SearchField(width: desktop ? 320 : 220),
+            if (!phone) _SearchField(width: desktop ? 330 : 220),
             if (phone)
               IconButton(
                 tooltip: 'Search',
@@ -165,7 +163,7 @@ class _SearchField extends StatelessWidget {
       child: TextField(
         style: const TextStyle(fontSize: 13.5),
         decoration: InputDecoration(
-          hintText: 'Search anything...',
+          hintText: 'Search by user, transaction ID...',
           hintStyle: const TextStyle(fontSize: 13.5, color: AppColors.textMuted),
           prefixIcon: const Icon(Icons.search_rounded,
               size: 20, color: AppColors.textSecondary),

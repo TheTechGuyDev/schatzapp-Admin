@@ -16,7 +16,7 @@ class AppCard extends StatelessWidget {
       padding: EdgeInsets.all(padding),
       decoration: BoxDecoration(
         color: AppColors.card,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.border),
         boxShadow: const [
           BoxShadow(color: Color(0x08111827), blurRadius: 12, offset: Offset(0, 4)),
@@ -46,7 +46,7 @@ class CardHeader extends StatelessWidget {
       Expanded(
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(title,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
           if (subtitle != null) ...[
             const SizedBox(height: 3),
             Text(subtitle!,
@@ -74,7 +74,7 @@ class LinkText extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
         child: Text(label,
             style: const TextStyle(
-                color: AppColors.brand, fontSize: 13, fontWeight: FontWeight.w600)),
+                color: AppColors.brand, fontSize: 12, fontWeight: FontWeight.w600)),
       ),
     );
   }
@@ -133,61 +133,70 @@ class StatCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final changeColor = positive ? AppColors.success : AppColors.danger;
     return AppCard(
-      padding: 18,
-      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        IconCircle(icon: icon, color: color, background: background),
-        const SizedBox(width: 14),
-        Expanded(
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(fontSize: 13, color: AppColors.textSecondary)),
-            const SizedBox(height: 6),
-            Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
+      padding: 0,
+      child: SizedBox(
+        height: 132,
+        child: Stack(children: [
+          if (spark != null)
+            Positioned(
+              right: 14,
+              bottom: 10,
+              child: Sparkline(values: spark!, color: color, width: 84, height: 30),
+            ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 18, 14, 14),
+            child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              IconCircle(icon: icon, color: color, background: background, size: 42),
+              const SizedBox(width: 12),
               Expanded(
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  alignment: Alignment.centerLeft,
-                  child: Text(value,
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text(label,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: -0.4)),
-                ),
-              ),
-              if (spark != null) ...[
-                const SizedBox(width: 6),
-                Sparkline(values: spark!, color: color, width: 60, height: 26),
-              ],
-            ]),
-            const SizedBox(height: 8),
-            Row(children: [
-              Icon(positive ? Icons.arrow_upward_rounded : Icons.arrow_downward_rounded,
-                  size: 13, color: changeColor),
-              const SizedBox(width: 2),
-              Expanded(
-                child: Text.rich(
-                  TextSpan(children: [
-                    TextSpan(
-                        text: change.split(' ').first,
-                        style: TextStyle(
-                            color: changeColor, fontWeight: FontWeight.w600)),
-                    TextSpan(
-                        text: change.contains(' ')
-                            ? change.substring(change.indexOf(' '))
-                            : '',
-                        style: const TextStyle(color: AppColors.textSecondary)),
+                          fontSize: 12, color: AppColors.navText, fontWeight: FontWeight.w500)),
+                  const SizedBox(height: 6),
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerLeft,
+                    child: Text(value,
+                        style: const TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.w700, letterSpacing: -0.3)),
+                  ),
+                  const SizedBox(height: 8),
+                  Row(children: [
+                    Icon(
+                        positive
+                            ? Icons.arrow_upward_rounded
+                            : Icons.arrow_downward_rounded,
+                        size: 12,
+                        color: changeColor),
+                    const SizedBox(width: 2),
+                    Flexible(
+                      child: Text.rich(
+                        TextSpan(children: [
+                          TextSpan(
+                              text: change.split(' ').first,
+                              style: TextStyle(
+                                  color: changeColor, fontWeight: FontWeight.w600)),
+                          TextSpan(
+                              text: change.contains(' ')
+                                  ? change.substring(change.indexOf(' '))
+                                  : '',
+                              style: const TextStyle(color: AppColors.textSecondary)),
+                        ]),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(fontSize: 10.5),
+                      ),
+                    ),
                   ]),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontSize: 11.5),
-                ),
+                ]),
               ),
             ]),
-          ]),
-        ),
-      ]),
+          ),
+        ]),
+      ),
     );
   }
 }

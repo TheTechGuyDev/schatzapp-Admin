@@ -356,6 +356,9 @@ class DonutChart extends StatelessWidget {
     required this.centerTop,
     required this.centerBottom,
     this.size = 170,
+    this.stroke = 22,
+    this.gap = 0.025,
+    this.fontSize = 22,
   });
 
   final List<double> values;
@@ -363,6 +366,9 @@ class DonutChart extends StatelessWidget {
   final String centerTop;
   final String centerBottom;
   final double size;
+  final double stroke;
+  final double gap;
+  final double fontSize;
 
   @override
   Widget build(BuildContext context) {
@@ -372,13 +378,13 @@ class DonutChart extends StatelessWidget {
       child: Stack(alignment: Alignment.center, children: [
         CustomPaint(
           size: Size.square(size),
-          painter: _DonutPainter(values, colors),
+          painter: _DonutPainter(values, colors, stroke, gap),
         ),
         Column(mainAxisSize: MainAxisSize.min, children: [
           Text(centerTop,
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w700)),
+              style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.w700)),
           Text(centerBottom,
-              style: const TextStyle(fontSize: 12, color: AppColors.textSecondary)),
+              style: const TextStyle(fontSize: 11, color: AppColors.textSecondary)),
         ]),
       ]),
     );
@@ -386,19 +392,19 @@ class DonutChart extends StatelessWidget {
 }
 
 class _DonutPainter extends CustomPainter {
-  _DonutPainter(this.values, this.colors);
+  _DonutPainter(this.values, this.colors, this.stroke, this.gap);
   final List<double> values;
   final List<Color> colors;
+  final double stroke;
+  final double gap;
 
   @override
   void paint(Canvas canvas, Size size) {
     final total = values.fold<double>(0, (a, b) => a + b);
     if (total <= 0) return;
-    const stroke = 22.0;
     final rect = Rect.fromLTWH(stroke / 2, stroke / 2, size.width - stroke,
         size.height - stroke);
     var start = -math.pi / 2;
-    const gap = 0.025;
     for (var i = 0; i < values.length; i++) {
       final sweep = values[i] / total * 2 * math.pi;
       if (sweep <= 0) continue;
