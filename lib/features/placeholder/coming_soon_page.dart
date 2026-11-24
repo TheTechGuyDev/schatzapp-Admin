@@ -13,30 +13,44 @@ class ComingSoonPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PageBody(children: [
-      AppCard(
-        padding: 40,
-        child: Column(children: [
-          Container(
-            width: 64,
-            height: 64,
-            decoration: BoxDecoration(
-              color: AppColors.brandSoft,
-              borderRadius: BorderRadius.circular(18),
-            ),
-            child: const Icon(Icons.construction_rounded,
-                color: AppColors.brand, size: 30),
+    return PageBody(
+      children: [
+        AppCard(
+          padding: 40,
+          child: Column(
+            children: [
+              Container(
+                width: 64,
+                height: 64,
+                decoration: BoxDecoration(
+                  color: AppColors.brandSoft,
+                  borderRadius: BorderRadius.circular(18),
+                ),
+                child: const Icon(
+                  Icons.construction_rounded,
+                  color: AppColors.brand,
+                  size: 30,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                '$title is coming in $phase',
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: 6),
+              const Text(
+                'The Dashboard is ready to preview now.',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: AppColors.textSecondary),
+              ),
+            ],
           ),
-          const SizedBox(height: 16),
-          Text('$title is coming in $phase',
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
-          const SizedBox(height: 6),
-          const Text('The Dashboard is ready to preview now.',
-              textAlign: TextAlign.center,
-              style: TextStyle(color: AppColors.textSecondary)),
-        ]),
-      ),
-    ]);
+        ),
+      ],
+    );
   }
 }

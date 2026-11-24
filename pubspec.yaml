@@ -12,6 +12,8 @@ dependencies:
   material_ui: ^1.1.0
   go_router: ^18.1.4
   google_fonts: ^9.0.0
+  web: ^1.1.2
+  shared_preferences: ^2.5.3
 
 dev_dependencies:
   flutter_test:

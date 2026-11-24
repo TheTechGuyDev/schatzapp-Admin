@@ -19,7 +19,11 @@ class AppCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.border),
         boxShadow: const [
-          BoxShadow(color: Color(0x08111827), blurRadius: 12, offset: Offset(0, 4)),
+          BoxShadow(
+            color: Color(0x08111827),
+            blurRadius: 12,
+            offset: Offset(0, 4),
+          ),
         ],
       ),
       child: child,
@@ -42,20 +46,36 @@ class CardHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-      Expanded(
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(title,
-              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
-          if (subtitle != null) ...[
-            const SizedBox(height: 3),
-            Text(subtitle!,
-                style: const TextStyle(fontSize: 12.5, color: AppColors.textSecondary)),
-          ],
-        ]),
-      ),
-      if (trailing != null) ...[const SizedBox(width: 12), trailing!],
-    ]);
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              if (subtitle != null) ...[
+                const SizedBox(height: 3),
+                Text(
+                  subtitle!,
+                  style: const TextStyle(
+                    fontSize: 12.5,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+        if (trailing != null) ...[const SizedBox(width: 12), trailing!],
+      ],
+    );
   }
 }
 
@@ -72,9 +92,14 @@ class LinkText extends StatelessWidget {
       onTap: onTap ?? () {},
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-        child: Text(label,
-            style: const TextStyle(
-                color: AppColors.brand, fontSize: 12, fontWeight: FontWeight.w600)),
+        child: Text(
+          label,
+          style: const TextStyle(
+            color: AppColors.brand,
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
       ),
     );
   }
@@ -118,11 +143,17 @@ class StatCard extends StatelessWidget {
     required this.background,
     this.positive = true,
     this.spark,
+    this.note,
   });
 
   final String label;
   final String value;
+
+  /// e.g. "12.8% vs last week" (first word coloured). Empty = none.
   final String change;
+
+  /// Grey text before the change, e.g. "This month" or "All time".
+  final String? note;
   final IconData icon;
   final Color color;
   final Color background;
@@ -136,66 +167,123 @@ class StatCard extends StatelessWidget {
       padding: 0,
       child: SizedBox(
         height: 132,
-        child: Stack(children: [
-          if (spark != null)
-            Positioned(
-              right: 14,
-              bottom: 10,
-              child: Sparkline(values: spark!, color: color, width: 84, height: 30),
-            ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 18, 14, 14),
-            child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              IconCircle(icon: icon, color: color, background: background, size: 42),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text(label,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                          fontSize: 12, color: AppColors.navText, fontWeight: FontWeight.w500)),
-                  const SizedBox(height: 6),
-                  FittedBox(
-                    fit: BoxFit.scaleDown,
-                    alignment: Alignment.centerLeft,
-                    child: Text(value,
-                        style: const TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.w700, letterSpacing: -0.3)),
-                  ),
-                  const SizedBox(height: 8),
-                  Row(children: [
-                    Icon(
-                        positive
-                            ? Icons.arrow_upward_rounded
-                            : Icons.arrow_downward_rounded,
-                        size: 12,
-                        color: changeColor),
-                    const SizedBox(width: 2),
-                    Flexible(
-                      child: Text.rich(
-                        TextSpan(children: [
-                          TextSpan(
-                              text: change.split(' ').first,
-                              style: TextStyle(
-                                  color: changeColor, fontWeight: FontWeight.w600)),
-                          TextSpan(
-                              text: change.contains(' ')
-                                  ? change.substring(change.indexOf(' '))
-                                  : '',
-                              style: const TextStyle(color: AppColors.textSecondary)),
-                        ]),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(fontSize: 10.5),
-                      ),
-                    ),
-                  ]),
-                ]),
+        child: Stack(
+          children: [
+            if (spark != null)
+              Positioned(
+                right: 14,
+                bottom: 10,
+                child: Sparkline(
+                  values: spark!,
+                  color: color,
+                  width: 84,
+                  height: 30,
+                ),
               ),
-            ]),
-          ),
-        ]),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 18, 14, 14),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  IconCircle(
+                    icon: icon,
+                    color: color,
+                    background: background,
+                    size: 42,
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          label,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: AppColors.navText,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        FittedBox(
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            value,
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: -0.3,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Row(
+                          children: [
+                            if (note != null) ...[
+                              Flexible(
+                                child: Text(
+                                  note!,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    fontSize: 10.5,
+                                    color: AppColors.textSecondary,
+                                  ),
+                                ),
+                              ),
+                              if (change.isNotEmpty) const SizedBox(width: 6),
+                            ],
+                            if (change.isNotEmpty) ...[
+                              Icon(
+                                positive
+                                    ? Icons.arrow_upward_rounded
+                                    : Icons.arrow_downward_rounded,
+                                size: 12,
+                                color: changeColor,
+                              ),
+                              const SizedBox(width: 2),
+                              Flexible(
+                                child: Text.rich(
+                                  TextSpan(
+                                    children: [
+                                      TextSpan(
+                                        text: change.split(' ').first,
+                                        style: TextStyle(
+                                          color: changeColor,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                      TextSpan(
+                                        text: change.contains(' ')
+                                            ? change.substring(
+                                                change.indexOf(' '),
+                                              )
+                                            : '',
+                                        style: const TextStyle(
+                                          color: AppColors.textSecondary,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(fontSize: 10.5),
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -244,9 +332,18 @@ class StatusChip extends StatelessWidget {
     };
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(6)),
-      child: Text(label,
-          style: TextStyle(color: fg, fontSize: 11.5, fontWeight: FontWeight.w600)),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          color: fg,
+          fontSize: 11.5,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
     );
   }
 }
@@ -274,8 +371,11 @@ class SearchBox extends StatelessWidget {
         decoration: InputDecoration(
           hintText: hint,
           hintStyle: const TextStyle(fontSize: 13, color: AppColors.textMuted),
-          prefixIcon: const Icon(Icons.search_rounded,
-              size: 18, color: AppColors.textSecondary),
+          prefixIcon: const Icon(
+            Icons.search_rounded,
+            size: 18,
+            color: AppColors.textSecondary,
+          ),
           filled: true,
           fillColor: Colors.white,
           contentPadding: EdgeInsets.zero,
@@ -294,12 +394,7 @@ class SearchBox extends StatelessWidget {
 }
 
 class PrimaryButton extends StatelessWidget {
-  const PrimaryButton({
-    super.key,
-    required this.label,
-    this.icon,
-    this.onTap,
-  });
+  const PrimaryButton({super.key, required this.label, this.icon, this.onTap});
 
   final String label;
   final IconData? icon;
@@ -316,15 +411,23 @@ class PrimaryButton extends StatelessWidget {
         child: Container(
           height: 38,
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Row(mainAxisSize: MainAxisSize.min, children: [
-            if (icon != null) ...[
-              Icon(icon, size: 17, color: Colors.white),
-              const SizedBox(width: 8),
-            ],
-            Text(label,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (icon != null) ...[
+                Icon(icon, size: 17, color: Colors.white),
+                const SizedBox(width: 8),
+              ],
+              Text(
+                label,
                 style: const TextStyle(
-                    color: Colors.white, fontWeight: FontWeight.w600, fontSize: 13)),
-          ]),
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 13,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -360,19 +463,30 @@ class OutlineButtonBox extends StatelessWidget {
         child: Container(
           height: 38,
           padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: Row(mainAxisSize: MainAxisSize.min, children: [
-            if (icon != null) ...[
-              Icon(icon, size: 16, color: AppColors.text),
-              const SizedBox(width: 8),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (icon != null) ...[
+                Icon(icon, size: 16, color: AppColors.text),
+                const SizedBox(width: 8),
+              ],
+              Text(
+                label,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 13,
+                ),
+              ),
+              if (trailingChevron) ...[
+                const SizedBox(width: 6),
+                const Icon(
+                  Icons.keyboard_arrow_down_rounded,
+                  size: 18,
+                  color: AppColors.textSecondary,
+                ),
+              ],
             ],
-            Text(label,
-                style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 13)),
-            if (trailingChevron) ...[
-              const SizedBox(width: 6),
-              const Icon(Icons.keyboard_arrow_down_rounded,
-                  size: 18, color: AppColors.textSecondary),
-            ],
-          ]),
+          ),
         ),
       ),
     );
@@ -400,27 +514,32 @@ class ResponsiveRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, c) {
-      if (c.maxWidth < breakAt) {
-        return Column(children: [
-          for (var i = 0; i < children.length; i++) ...[
-            if (i > 0) SizedBox(height: gap),
-            children[i],
+    return LayoutBuilder(
+      builder: (context, c) {
+        if (c.maxWidth < breakAt) {
+          return Column(
+            children: [
+              for (var i = 0; i < children.length; i++) ...[
+                if (i > 0) SizedBox(height: gap),
+                children[i],
+              ],
+            ],
+          );
+        }
+        final row = Row(
+          crossAxisAlignment: height == null
+              ? CrossAxisAlignment.start
+              : CrossAxisAlignment.stretch,
+          children: [
+            for (var i = 0; i < children.length; i++) ...[
+              if (i > 0) SizedBox(width: gap),
+              Expanded(flex: flex[i], child: children[i]),
+            ],
           ],
-        ]);
-      }
-      final row = Row(
-        crossAxisAlignment:
-            height == null ? CrossAxisAlignment.start : CrossAxisAlignment.stretch,
-        children: [
-          for (var i = 0; i < children.length; i++) ...[
-            if (i > 0) SizedBox(width: gap),
-            Expanded(flex: flex[i], child: children[i]),
-          ],
-        ],
-      );
-      return height == null ? row : SizedBox(height: height, child: row);
-    });
+        );
+        return height == null ? row : SizedBox(height: height, child: row);
+      },
+    );
   }
 }
 
@@ -445,19 +564,23 @@ class TileGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, c) {
-      var cols = ((c.maxWidth + gap) / (minTileWidth + gap)).floor();
-      cols = cols.clamp(1, maxColumns);
-      if (allowedColumns != null) {
-        cols = allowedColumns!.where((a) => a <= cols).fold(1, (a, b) => b > a ? b : a);
-      }
-      final w = (c.maxWidth - gap * (cols - 1)) / cols;
-      return Wrap(
-        spacing: gap,
-        runSpacing: gap,
-        children: [for (final ch in children) SizedBox(width: w, child: ch)],
-      );
-    });
+    return LayoutBuilder(
+      builder: (context, c) {
+        var cols = ((c.maxWidth + gap) / (minTileWidth + gap)).floor();
+        cols = cols.clamp(1, maxColumns);
+        if (allowedColumns != null) {
+          cols = allowedColumns!
+              .where((a) => a <= cols)
+              .fold(1, (a, b) => b > a ? b : a);
+        }
+        final w = (c.maxWidth - gap * (cols - 1)) / cols;
+        return Wrap(
+          spacing: gap,
+          runSpacing: gap,
+          children: [for (final ch in children) SizedBox(width: w, child: ch)],
+        );
+      },
+    );
   }
 }
 
@@ -480,29 +603,42 @@ class LegendRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
-      child: Row(children: [
-        Container(
-          width: 10,
-          height: 10,
-          decoration:
-              BoxDecoration(color: color, borderRadius: BorderRadius.circular(3)),
-        ),
-        const SizedBox(width: 10),
-        Expanded(
-          child: Text(label,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(fontSize: 12.5, color: AppColors.navText)),
-        ),
-        Text(value,
-            style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600)),
-        if (percent != null)
-          SizedBox(
-            width: 54,
-            child: Text(percent!,
-                textAlign: TextAlign.right,
-                style: const TextStyle(fontSize: 11.5, color: AppColors.textSecondary)),
+      child: Row(
+        children: [
+          Container(
+            width: 10,
+            height: 10,
+            decoration: BoxDecoration(
+              color: color,
+              borderRadius: BorderRadius.circular(3),
+            ),
           ),
-      ]),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              label,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(fontSize: 12.5, color: AppColors.navText),
+            ),
+          ),
+          Text(
+            value,
+            style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600),
+          ),
+          if (percent != null)
+            SizedBox(
+              width: 54,
+              child: Text(
+                percent!,
+                textAlign: TextAlign.right,
+                style: const TextStyle(
+                  fontSize: 11.5,
+                  color: AppColors.textSecondary,
+                ),
+              ),
+            ),
+        ],
+      ),
     );
   }
 }

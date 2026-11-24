@@ -3,8 +3,14 @@
 library;
 
 class CountryStat {
-  const CountryStat(this.code, this.name, this.registered, this.active,
-      this.restricted, this.newThisMonth);
+  const CountryStat(
+    this.code,
+    this.name,
+    this.registered,
+    this.active,
+    this.restricted,
+    this.newThisMonth,
+  );
 
   final String code;
   final String name;
@@ -17,8 +23,19 @@ class CountryStat {
 }
 
 class TxRow {
-  const TxRow(this.ref, this.user, this.email, this.type, this.detail, this.amount,
-      this.fee, this.status, this.date, this.time, this.kind);
+  const TxRow(
+    this.ref,
+    this.user,
+    this.email,
+    this.type,
+    this.detail,
+    this.amount,
+    this.fee,
+    this.status,
+    this.date,
+    this.time,
+    this.kind,
+  );
   final String ref;
   final String user;
   final String email;
@@ -37,7 +54,13 @@ class TxRow {
 enum Level { critical, warning, info, normal }
 
 class AttentionItem {
-  const AttentionItem(this.label, this.count, this.hint, this.route, this.level);
+  const AttentionItem(
+    this.label,
+    this.count,
+    this.hint,
+    this.route,
+    this.level,
+  );
   final String label;
   final int count;
   final String hint;
@@ -71,14 +94,26 @@ class DashboardSample {
   ];
 
   static const weekLabels = [
-    'Nov 17', 'Nov 18', 'Nov 19', 'Nov 20', 'Nov 21', 'Nov 22', 'Nov 23',
+    'Nov 17',
+    'Nov 18',
+    'Nov 19',
+    'Nov 20',
+    'Nov 21',
+    'Nov 22',
+    'Nov 23',
   ];
 
   static const dau = <double>[3420, 3610, 3880, 3640, 3790, 3720, 3915];
   static const signups = <double>[1180, 1260, 1410, 1300, 1390, 1350, 1520];
 
   static const volume = <double>[
-    5.2e6, 6.1e6, 8.4e6, 6.9e6, 5.8e6, 7.3e6, 8.1e6,
+    5.2e6,
+    6.1e6,
+    8.4e6,
+    6.9e6,
+    5.8e6,
+    7.3e6,
+    8.1e6,
   ];
   static const txCount = <double>[7120, 7860, 9540, 8310, 7480, 8650, 9432];
 
@@ -123,16 +158,71 @@ class DashboardSample {
   ];
 
   static const transactions = <TxRow>[
-    TxRow('TXN-2026-112301', 'John Okafor', 'john.o***@gmail.com', 'Transfer',
-        'To SchatzApp user', '₦250,000.00', '₦0.00', 'Completed', 'Nov 23, 2026', '10:30 AM', 'transfer'),
-    TxRow('TXN-2026-112302', 'Emily Johnson', 'emily.j***@gmail.com', 'Airtime',
-        'MTN Nigeria', '₦2,500.00', '₦0.00', 'Completed', 'Nov 23, 2026', '09:45 AM', 'airtime'),
-    TxRow('TXN-2026-112303', 'Michael Uche', 'michael.u***@gmail.com', 'Gift Card',
-        'Schatz Gift Card', '₦45,000.00', '₦50.00', 'Completed', 'Nov 23, 2026', '09:15 AM', 'giftcard'),
-    TxRow('TXN-2026-112304', 'Sarah Collins', 'sarah.c***@gmail.com', 'Wallet Top Up',
-        'From card', '₦100,000.00', '₦100.00', 'Pending', 'Nov 23, 2026', '08:48 AM', 'topup'),
-    TxRow('TXN-2026-112305', 'David Brown', 'david.b***@gmail.com', 'Data Bundle',
-        'Airtel Nigeria', '₦7,500.00', '₦0.00', 'Failed', 'Nov 22, 2026', '07:22 PM', 'data'),
+    TxRow(
+      'TXN-2026-112301',
+      'John Okafor',
+      'john.o***@gmail.com',
+      'Transfer',
+      'To SchatzApp user',
+      '₦250,000.00',
+      '₦0.00',
+      'Completed',
+      'Nov 23, 2026',
+      '10:30 AM',
+      'transfer',
+    ),
+    TxRow(
+      'TXN-2026-112302',
+      'Emily Johnson',
+      'emily.j***@gmail.com',
+      'Airtime',
+      'MTN Nigeria',
+      '₦2,500.00',
+      '₦0.00',
+      'Completed',
+      'Nov 23, 2026',
+      '09:45 AM',
+      'airtime',
+    ),
+    TxRow(
+      'TXN-2026-112303',
+      'Michael Uche',
+      'michael.u***@gmail.com',
+      'Gift Card',
+      'Schatz Gift Card',
+      '₦45,000.00',
+      '₦50.00',
+      'Completed',
+      'Nov 23, 2026',
+      '09:15 AM',
+      'giftcard',
+    ),
+    TxRow(
+      'TXN-2026-112304',
+      'Sarah Collins',
+      'sarah.c***@gmail.com',
+      'Wallet Top Up',
+      'From card',
+      '₦100,000.00',
+      '₦100.00',
+      'Pending',
+      'Nov 23, 2026',
+      '08:48 AM',
+      'topup',
+    ),
+    TxRow(
+      'TXN-2026-112305',
+      'David Brown',
+      'david.b***@gmail.com',
+      'Data Bundle',
+      'Airtel Nigeria',
+      '₦7,500.00',
+      '₦0.00',
+      'Failed',
+      'Nov 22, 2026',
+      '07:22 PM',
+      'data',
+    ),
   ];
 
   /// Countries with the most users, for the right-hand ranking card.
@@ -145,19 +235,75 @@ class DashboardSample {
   ];
 
   static const attention = <AttentionItem>[
-    AttentionItem('KYC reviews waiting', 126, 'Oldest waiting 2 days', '/kyc', Level.warning),
-    AttentionItem('Open support tickets', 38, '6 past response target', '/support', Level.info),
-    AttentionItem('Open disputes', 9, '2 escalated', '/disputes', Level.critical),
-    AttentionItem('Reported accounts', 14, 'Flagged by other users', '/users', Level.warning),
-    AttentionItem('Failed transactions (24h)', 23, 'Above normal rate', '/transactions', Level.critical),
-    AttentionItem('Approvals waiting', 1, 'Super Admin promotion', '/roles', Level.info),
+    AttentionItem(
+      'KYC reviews waiting',
+      126,
+      'Oldest waiting 2 days',
+      '/kyc',
+      Level.warning,
+    ),
+    AttentionItem(
+      'Open support tickets',
+      38,
+      '6 past response target',
+      '/support',
+      Level.info,
+    ),
+    AttentionItem(
+      'Open disputes',
+      9,
+      '2 escalated',
+      '/disputes',
+      Level.critical,
+    ),
+    AttentionItem(
+      'Reported accounts',
+      14,
+      'Flagged by other users',
+      '/users',
+      Level.warning,
+    ),
+    AttentionItem(
+      'Failed transactions (24h)',
+      23,
+      'Above normal rate',
+      '/transactions',
+      Level.critical,
+    ),
+    AttentionItem(
+      'Approvals waiting',
+      1,
+      'Super Admin promotion',
+      '/roles',
+      Level.info,
+    ),
   ];
 
   static const alerts = <AlertItem>[
-    AlertItem('High value transaction', '₦5,000,000.00 by John Okafor', '2m ago', Level.critical),
-    AlertItem('KYC verification pending', '34 users waiting verification', '15m ago', Level.warning),
-    AlertItem('New admin sign-in', 'Michael Uche from Lagos, NG', '1h ago', Level.info),
-    AlertItem('Failed login attempts', '5 failed attempts on an admin account', '2h ago', Level.critical),
+    AlertItem(
+      'High value transaction',
+      '₦5,000,000.00 by John Okafor',
+      '2m ago',
+      Level.critical,
+    ),
+    AlertItem(
+      'KYC verification pending',
+      '34 users waiting verification',
+      '15m ago',
+      Level.warning,
+    ),
+    AlertItem(
+      'New admin sign-in',
+      'Michael Uche from Lagos, NG',
+      '1h ago',
+      Level.info,
+    ),
+    AlertItem(
+      'Failed login attempts',
+      '5 failed attempts on an admin account',
+      '2h ago',
+      Level.critical,
+    ),
   ];
 
   static const systemStatus = <(String, String)>[

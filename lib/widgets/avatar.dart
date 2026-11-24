@@ -25,7 +25,11 @@ class Avatar extends StatelessWidget {
   ];
 
   String get _initials {
-    final parts = name.trim().split(RegExp(r'\s+')).where((p) => p.isNotEmpty).toList();
+    final parts = name
+        .trim()
+        .split(RegExp(r'\s+'))
+        .where((p) => p.isNotEmpty)
+        .toList();
     if (parts.isEmpty) return '?';
     if (parts.length == 1) return parts.first[0].toUpperCase();
     return (parts.first[0] + parts.last[0]).toUpperCase();
@@ -37,33 +41,39 @@ class Avatar extends StatelessWidget {
     return SizedBox(
       width: size,
       height: size,
-      child: Stack(clipBehavior: Clip.none, children: [
-        Container(
-          width: size,
-          height: size,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(color: tint.$1, shape: BoxShape.circle),
-          child: Text(_initials,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Container(
+            width: size,
+            height: size,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(color: tint.$1, shape: BoxShape.circle),
+            child: Text(
+              _initials,
               style: TextStyle(
-                  color: tint.$2,
-                  fontSize: size * 0.36,
-                  fontWeight: FontWeight.w700)),
-        ),
-        if (online)
-          Positioned(
-            right: 0,
-            bottom: 0,
-            child: Container(
-              width: size * 0.28,
-              height: size * 0.28,
-              decoration: BoxDecoration(
-                color: AppColors.online,
-                shape: BoxShape.circle,
-                border: Border.all(color: Colors.white, width: 2),
+                color: tint.$2,
+                fontSize: size * 0.36,
+                fontWeight: FontWeight.w700,
               ),
             ),
           ),
-      ]),
+          if (online)
+            Positioned(
+              right: 0,
+              bottom: 0,
+              child: Container(
+                width: size * 0.28,
+                height: size * 0.28,
+                decoration: BoxDecoration(
+                  color: AppColors.online,
+                  shape: BoxShape.circle,
+                  border: Border.all(color: Colors.white, width: 2),
+                ),
+              ),
+            ),
+        ],
+      ),
     );
   }
 }

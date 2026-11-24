@@ -16,17 +16,19 @@ class AdaptiveColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, c) {
-      final bounded = c.hasBoundedHeight;
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: bounded ? MainAxisSize.max : MainAxisSize.min,
-        children: [
-          ...top,
-          bounded ? Expanded(child: middle) : middle,
-          ...bottom,
-        ],
-      );
-    });
+    return LayoutBuilder(
+      builder: (context, c) {
+        final bounded = c.hasBoundedHeight;
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: bounded ? MainAxisSize.max : MainAxisSize.min,
+          children: [
+            ...top,
+            bounded ? Expanded(child: middle) : middle,
+            ...bottom,
+          ],
+        );
+      },
+    );
   }
 }

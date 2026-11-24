@@ -26,14 +26,16 @@ class _AdminShellState extends State<AdminShell> {
   Widget build(BuildContext context) {
     final size = Breakpoints.of(context);
     final module = moduleFor(widget.location);
-    final content = Column(children: [
-      TopBar(
-        module: module,
-        size: size,
-        onMenu: () => _scaffoldKey.currentState?.openDrawer(),
-      ),
-      Expanded(child: widget.child),
-    ]);
+    final content = Column(
+      children: [
+        TopBar(
+          module: module,
+          size: size,
+          onMenu: () => _scaffoldKey.currentState?.openDrawer(),
+        ),
+        Expanded(child: widget.child),
+      ],
+    );
 
     if (size == ScreenSize.phone) {
       return Scaffold(
@@ -53,10 +55,15 @@ class _AdminShellState extends State<AdminShell> {
     }
 
     return Scaffold(
-      body: Row(children: [
-        SideNav(location: widget.location, expanded: size == ScreenSize.desktop),
-        Expanded(child: content),
-      ]),
+      body: Row(
+        children: [
+          SideNav(
+            location: widget.location,
+            expanded: size == ScreenSize.desktop,
+          ),
+          Expanded(child: content),
+        ],
+      ),
     );
   }
 }
@@ -81,70 +88,104 @@ class TopBar extends StatelessWidget {
     final title = module.label;
 
     return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-      ),
+      decoration: const BoxDecoration(color: Colors.white),
       child: SafeArea(
         bottom: false,
         child: Padding(
-          padding: EdgeInsets.fromLTRB(phone ? 6 : 26, phone ? 8 : 14, phone ? 10 : 26,
-              phone ? 8 : 14),
-          child: Row(children: [
-            if (phone)
-              IconButton(
-                tooltip: 'Menu',
-                onPressed: onMenu,
-                icon: const Icon(Icons.menu_rounded, color: AppColors.text),
-              ),
-            Expanded(
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(title,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                        fontSize: phone ? 18 : 20,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: -0.3)),
-                if (!phone) ...[
-                  const SizedBox(height: 3),
-                  Text(module.subtitle,
+          padding: EdgeInsets.fromLTRB(
+            phone ? 6 : 26,
+            phone ? 8 : 14,
+            phone ? 10 : 26,
+            phone ? 8 : 14,
+          ),
+          child: Row(
+            children: [
+              if (phone)
+                IconButton(
+                  tooltip: 'Menu',
+                  onPressed: onMenu,
+                  icon: const Icon(Icons.menu_rounded, color: AppColors.text),
+                ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                          fontSize: 13, color: AppColors.textSecondary)),
-                ],
-              ]),
-            ),
-            const SizedBox(width: 16),
-            if (!phone) _SearchField(width: desktop ? 330 : 220),
-            if (phone)
-              IconButton(
-                tooltip: 'Search',
-                onPressed: () {},
-                icon: const Icon(Icons.search_rounded, color: AppColors.text),
+                      style: TextStyle(
+                        fontSize: phone ? 18 : 20,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: -0.3,
+                      ),
+                    ),
+                    if (!phone) ...[
+                      const SizedBox(height: 3),
+                      Text(
+                        module.subtitle,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 13,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
               ),
-            SizedBox(width: phone ? 2 : 16),
-            const _BellButton(count: 12),
-            if (!phone) ...[
-              const SizedBox(width: 18),
-              Avatar(name: s.name, size: 40),
-              if (desktop) ...[
-                const SizedBox(width: 10),
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text(s.name,
-                      style: const TextStyle(
-                          fontSize: 14, fontWeight: FontWeight.w600)),
-                  const SizedBox(height: 1),
-                  Text(s.role,
-                      style: const TextStyle(
-                          fontSize: 12, color: AppColors.textSecondary)),
-                ]),
-                const SizedBox(width: 8),
-                const Icon(Icons.keyboard_arrow_down_rounded,
-                    color: AppColors.textSecondary),
+              const SizedBox(width: 16),
+              if (!phone) _SearchField(width: desktop ? 330 : 220),
+              if (phone)
+                IconButton(
+                  tooltip: 'Search',
+                  onPressed: () {},
+                  icon: const Icon(Icons.search_rounded, color: AppColors.text),
+                ),
+              SizedBox(width: phone ? 2 : 16),
+              const _BellButton(count: 12),
+              if (!phone) ...[
+                const SizedBox(width: 18),
+                AccountMenu(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Avatar(name: s.name, size: 40),
+                      if (desktop) ...[
+                        const SizedBox(width: 10),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              s.name,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(height: 1),
+                            Text(
+                              s.role,
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: AppColors.textSecondary,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(width: 8),
+                        const Icon(
+                          Icons.keyboard_arrow_down_rounded,
+                          color: AppColors.textSecondary,
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
               ],
             ],
-          ]),
+          ),
         ),
       ),
     );
@@ -164,9 +205,15 @@ class _SearchField extends StatelessWidget {
         style: const TextStyle(fontSize: 13.5),
         decoration: InputDecoration(
           hintText: 'Search by user, transaction ID...',
-          hintStyle: const TextStyle(fontSize: 13.5, color: AppColors.textMuted),
-          prefixIcon: const Icon(Icons.search_rounded,
-              size: 20, color: AppColors.textSecondary),
+          hintStyle: const TextStyle(
+            fontSize: 13.5,
+            color: AppColors.textMuted,
+          ),
+          prefixIcon: const Icon(
+            Icons.search_rounded,
+            size: 20,
+            color: AppColors.textSecondary,
+          ),
           suffixIcon: SizedBox(
             width: 50,
             child: Center(
@@ -176,8 +223,13 @@ class _SearchField extends StatelessWidget {
                   color: const Color(0xFFF3F4F6),
                   borderRadius: BorderRadius.circular(6),
                 ),
-                child: const Text('Ctrl K',
-                    style: TextStyle(fontSize: 10.5, color: AppColors.textSecondary)),
+                child: const Text(
+                  'Ctrl K',
+                  style: TextStyle(
+                    fontSize: 10.5,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
               ),
             ),
           ),
@@ -216,31 +268,40 @@ class _BellButton extends StatelessWidget {
             shape: BoxShape.circle,
             border: Border.all(color: AppColors.border),
           ),
-          child: Stack(clipBehavior: Clip.none, children: [
-            const Center(
-              child: Icon(Icons.notifications_none_rounded,
-                  size: 21, color: AppColors.text),
-            ),
-            Positioned(
-              right: -3,
-              top: -3,
-              child: Container(
-                width: 19,
-                height: 19,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: AppColors.brand,
-                  shape: BoxShape.circle,
-                  border: Border.all(color: Colors.white, width: 1.5),
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              const Center(
+                child: Icon(
+                  Icons.notifications_none_rounded,
+                  size: 21,
+                  color: AppColors.text,
                 ),
-                child: Text('$count',
-                    style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 9.5,
-                        fontWeight: FontWeight.w700)),
               ),
-            ),
-          ]),
+              Positioned(
+                right: -3,
+                top: -3,
+                child: Container(
+                  width: 19,
+                  height: 19,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: AppColors.brand,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white, width: 1.5),
+                  ),
+                  child: Text(
+                    '$count',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 9.5,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

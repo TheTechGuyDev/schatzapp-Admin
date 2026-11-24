@@ -1,6 +1,8 @@
 import 'package:material_ui/material_ui.dart';
 
 import '../features/dashboard/dashboard_page.dart';
+import '../features/kyc/kyc_page.dart';
+import '../features/users/users_page.dart';
 import '../features/placeholder/coming_soon_page.dart';
 
 /// Side nav sections, in display order.
@@ -47,16 +49,15 @@ AdminModule _soon({
   required NavSection section,
   required String permission,
   required String phase,
-}) =>
-    AdminModule(
-      id: id,
-      label: label,
-      subtitle: subtitle,
-      icon: icon,
-      section: section,
-      permission: permission,
-      builder: (_) => ComingSoonPage(title: label, phase: phase),
-    );
+}) => AdminModule(
+  id: id,
+  label: label,
+  subtitle: subtitle,
+  icon: icon,
+  section: section,
+  permission: permission,
+  builder: (_) => ComingSoonPage(title: label, phase: phase),
+);
 
 final List<AdminModule> adminModules = [
   AdminModule(
@@ -68,14 +69,14 @@ final List<AdminModule> adminModules = [
     permission: 'dashboard.view',
     builder: (_) => const DashboardPage(),
   ),
-  _soon(
+  AdminModule(
     id: 'users',
     label: 'Users',
     subtitle: 'Search, monitor and investigate user accounts',
     icon: Icons.people_alt_outlined,
     section: NavSection.main,
     permission: 'users.view',
-    phase: 'Phase 3',
+    builder: (_) => const UsersPage(),
   ),
   _soon(
     id: 'roles',
@@ -86,14 +87,14 @@ final List<AdminModule> adminModules = [
     permission: 'roles.view',
     phase: 'Phase 11',
   ),
-  _soon(
+  AdminModule(
     id: 'kyc',
     label: 'KYC Verification',
     subtitle: 'Verify user identities and manage KYC compliance',
     icon: Icons.fact_check_outlined,
     section: NavSection.main,
     permission: 'kyc.view',
-    phase: 'Phase 5',
+    builder: (_) => const KycPage(),
   ),
   _soon(
     id: 'transactions',
@@ -197,9 +198,9 @@ final List<AdminModule> adminModules = [
 ];
 
 AdminModule moduleFor(String location) => adminModules.firstWhere(
-      (m) => location.startsWith(m.path),
-      orElse: () => adminModules.first,
-    );
+  (m) => location.startsWith(m.path),
+  orElse: () => adminModules.first,
+);
 
 /// Counts shown as small badges on nav items (sample values for the UI phase).
 const Map<String, int> navBadges = {'notifications': 12};
