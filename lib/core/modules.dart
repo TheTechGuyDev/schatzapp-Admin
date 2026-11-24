@@ -1,7 +1,12 @@
 import 'package:material_ui/material_ui.dart';
 
 import '../features/dashboard/dashboard_page.dart';
+import '../features/airtime/airtime_page.dart';
+import '../features/cards/cards_page.dart';
+import '../features/giftcards/gift_cards_page.dart';
 import '../features/kyc/kyc_page.dart';
+import '../features/transactions/transactions_page.dart';
+import '../features/wallets/wallets_page.dart';
 import '../features/users/users_page.dart';
 import '../features/placeholder/coming_soon_page.dart';
 
@@ -96,50 +101,50 @@ final List<AdminModule> adminModules = [
     permission: 'kyc.view',
     builder: (_) => const KycPage(),
   ),
-  _soon(
+  AdminModule(
     id: 'transactions',
     label: 'Transactions',
     subtitle: 'Monitor and trace every wallet transaction',
     icon: Icons.swap_horiz_rounded,
     section: NavSection.main,
     permission: 'transactions.view',
-    phase: 'Phase 6',
+    builder: (_) => const TransactionsPage(),
   ),
-  _soon(
+  AdminModule(
     id: 'wallets',
     label: 'Wallets',
     subtitle: 'Manage user wallets and balances',
     icon: Icons.account_balance_wallet_outlined,
     section: NavSection.main,
     permission: 'wallets.view',
-    phase: 'Phase 6',
+    builder: (_) => const WalletsPage(),
   ),
-  _soon(
+  AdminModule(
     id: 'cards',
     label: 'Cards',
     subtitle: 'Saved payment cards and card top-ups',
     icon: Icons.credit_card_outlined,
     section: NavSection.main,
     permission: 'cards.view',
-    phase: 'Phase 6',
+    builder: (_) => const CardsPage(),
   ),
-  _soon(
+  AdminModule(
     id: 'gift-cards',
     label: 'Gift Cards',
     subtitle: 'Manage gift cards, orders and redemptions',
     icon: Icons.card_giftcard_outlined,
     section: NavSection.main,
     permission: 'giftcards.view',
-    phase: 'Phase 7',
+    builder: (_) => const GiftCardsPage(),
   ),
-  _soon(
+  AdminModule(
     id: 'airtime-data',
     label: 'Airtime & Data',
     subtitle: 'Airtime and data purchases, networks and vendors',
     icon: Icons.cell_tower_rounded,
     section: NavSection.main,
     permission: 'airtime.view',
-    phase: 'Phase 6',
+    builder: (_) => const AirtimePage(),
   ),
   _soon(
     id: 'disputes',

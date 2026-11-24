@@ -551,8 +551,7 @@ class _UsersSide extends StatelessWidget {
       ('Deleted', 156.0, Color(0xFFD1D5DB)),
     ];
     final total = data.fold<double>(0, (a, b) => a + b.$2);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+    return SideStack(
       children: [
         AppCard(
           padding: 16,

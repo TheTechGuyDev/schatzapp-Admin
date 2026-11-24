@@ -354,11 +354,13 @@ class SearchBox extends StatelessWidget {
     required this.hint,
     this.width = 300,
     this.onChanged,
+    this.controller,
   });
 
   final String hint;
   final double width;
   final ValueChanged<String>? onChanged;
+  final TextEditingController? controller;
 
   @override
   Widget build(BuildContext context) {
@@ -366,6 +368,7 @@ class SearchBox extends StatelessWidget {
       width: width,
       height: 38,
       child: TextField(
+        controller: controller,
         onChanged: onChanged,
         style: const TextStyle(fontSize: 13),
         decoration: InputDecoration(
@@ -639,6 +642,54 @@ class LegendRow extends StatelessWidget {
             ),
         ],
       ),
+    );
+  }
+}
+
+/// Right-hand column of a page. Beside a table it is a plain column; when it
+/// drops below the table on mid-size screens its cards sit side by side.
+class SideStack extends StatelessWidget {
+  const SideStack({super.key, required this.children, this.gap = 18});
+
+  final List<Widget> children;
+  final double gap;
+
+  @override
+  Widget build(BuildContext context) {
+    final cards = children
+        .where((w) => !(w is SizedBox && w.child == null))
+        .toList();
+    return LayoutBuilder(
+      builder: (context, c) {
+        if (c.maxWidth < 640) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              for (var i = 0; i < cards.length; i++) ...[
+                if (i > 0) SizedBox(height: gap),
+                cards[i],
+              ],
+            ],
+          );
+        }
+        if (c.maxWidth < 700) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              for (var i = 0; i < cards.length; i++) ...[
+                if (i > 0) SizedBox(height: gap),
+                cards[i],
+              ],
+            ],
+          );
+        }
+        return TileGrid(
+          minTileWidth: 300,
+          maxColumns: 3,
+          gap: gap,
+          children: cards,
+        );
+      },
     );
   }
 }

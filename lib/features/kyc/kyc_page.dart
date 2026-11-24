@@ -441,8 +441,7 @@ class _KycSide extends StatelessWidget {
       ('Pending', 86.0, AppColors.warning),
       ('Rejected', 150.0, AppColors.danger),
     ];
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+    return SideStack(
       children: [
         AppCard(
           padding: 16,

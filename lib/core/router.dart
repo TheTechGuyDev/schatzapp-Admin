@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../features/auth/login_page.dart';
+import '../features/transactions/trace_page.dart';
 import '../features/users/user_profile_page.dart';
 import '../shell/admin_shell.dart';
 import 'modules.dart';
@@ -36,6 +37,16 @@ final appRouter = GoRouter(
             pageBuilder: (context, state) =>
                 NoTransitionPage(key: state.pageKey, child: m.builder(context)),
             routes: [
+              if (m.id == 'transactions')
+                GoRoute(
+                  path: 'trace',
+                  pageBuilder: (context, state) => NoTransitionPage(
+                    key: state.pageKey,
+                    child: TracePage(
+                      initialRef: state.uri.queryParameters['ref'],
+                    ),
+                  ),
+                ),
               if (m.id == 'users')
                 GoRoute(
                   path: ':id',

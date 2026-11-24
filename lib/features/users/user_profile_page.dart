@@ -897,10 +897,8 @@ class _TransactionsState extends State<_Transactions> {
                         icon: Icons.account_tree_outlined,
                         tooltip: 'Trace this transaction',
                         color: AppColors.brand,
-                        onTap: () => toast(
-                          context,
-                          'Transaction Trace opens in Phase 3.',
-                        ),
+                        onTap: () =>
+                            context.go('/transactions/trace?ref=${t.ref}'),
                       ),
                     ],
                   ),
@@ -1031,7 +1029,7 @@ class _InvestigationState extends State<_Investigation> {
                           child: TwoLine(h.action, '${h.when} · ${h.admin}'),
                         ),
                         Text(
-                          '${h.from} → ${h.to}',
+                          '${h.from} to ${h.to}',
                           style: const TextStyle(
                             fontSize: 11,
                             color: AppColors.textSecondary,
@@ -1178,7 +1176,7 @@ class _History extends StatelessWidget {
       Col('Date & time', 13),
       Col('Administrator', 15),
       Col('Action', 18),
-      Col('Previous → new', 18),
+      Col('Previous / new status', 18),
       Col('Reason', 26),
     ];
     final rows = user.history;
@@ -1242,7 +1240,7 @@ class _History extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    '${h.from} → ${h.to}',
+                    '${h.from} to ${h.to}',
                     style: const TextStyle(fontSize: 11.5),
                   ),
                   Text(

@@ -242,15 +242,10 @@ class _LinePainter extends CustomPainter {
     double x(int i) => leftPad + (count == 1 ? 0 : plotW * i / (count - 1));
     double y(double v, double max) => plotH - (v / max) * (plotH - 8);
 
-    final leftFmt =
-        series
-            .firstWhere((s) => !s.secondary, orElse: () => series.first)
-            .format ??
-        compactNumber;
+    // Axes use short numbers; the tooltip shows each series' full format.
+    const leftFmt = compactNumber;
     final rightSeries = series.where((s) => s.secondary).toList();
-    final rightFmt = rightSeries.isEmpty
-        ? compactNumber
-        : (rightSeries.first.format ?? compactNumber);
+    const rightFmt = compactNumber;
 
     final divisions = _divisions(maxLeft);
     final grid = Paint()
