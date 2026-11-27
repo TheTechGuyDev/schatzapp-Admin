@@ -1,6 +1,16 @@
 import 'package:material_ui/material_ui.dart';
 
 import '../features/dashboard/dashboard_page.dart';
+import '../features/audit/audit_logs_page.dart';
+import '../features/deposits/deposits_page.dart';
+import '../features/disputes/disputes_page.dart';
+import '../features/moderation/moderation_page.dart';
+import '../features/notifications/notifications_page.dart';
+import '../features/reports/reports_page.dart';
+import '../features/requests/requests_page.dart';
+import '../features/roles/roles_page.dart';
+import '../features/settings/settings_page.dart';
+import '../features/support/support_page.dart';
 import '../features/airtime/airtime_page.dart';
 import '../features/cards/cards_page.dart';
 import '../features/giftcards/gift_cards_page.dart';
@@ -8,7 +18,6 @@ import '../features/kyc/kyc_page.dart';
 import '../features/transactions/transactions_page.dart';
 import '../features/wallets/wallets_page.dart';
 import '../features/users/users_page.dart';
-import '../features/placeholder/coming_soon_page.dart';
 
 /// Side nav sections, in display order.
 enum NavSection {
@@ -46,24 +55,6 @@ class AdminModule {
   String get path => '/$id';
 }
 
-AdminModule _soon({
-  required String id,
-  required String label,
-  required String subtitle,
-  required IconData icon,
-  required NavSection section,
-  required String permission,
-  required String phase,
-}) => AdminModule(
-  id: id,
-  label: label,
-  subtitle: subtitle,
-  icon: icon,
-  section: section,
-  permission: permission,
-  builder: (_) => ComingSoonPage(title: label, phase: phase),
-);
-
 final List<AdminModule> adminModules = [
   AdminModule(
     id: 'dashboard',
@@ -83,14 +74,14 @@ final List<AdminModule> adminModules = [
     permission: 'users.view',
     builder: (_) => const UsersPage(),
   ),
-  _soon(
+  AdminModule(
     id: 'roles',
     label: 'Roles & Permissions',
     subtitle: 'Manage admin roles and their access permissions',
     icon: Icons.manage_accounts_outlined,
     section: NavSection.main,
     permission: 'roles.view',
-    phase: 'Phase 11',
+    builder: (_) => const RolesPage(),
   ),
   AdminModule(
     id: 'kyc',
@@ -120,6 +111,15 @@ final List<AdminModule> adminModules = [
     builder: (_) => const WalletsPage(),
   ),
   AdminModule(
+    id: 'deposits',
+    label: 'Deposits & Top-ups',
+    subtitle: 'Card and bank transfer top-ups that become Schatz',
+    icon: Icons.add_card_rounded,
+    section: NavSection.main,
+    permission: 'deposits.view',
+    builder: (_) => const DepositsPage(),
+  ),
+  AdminModule(
     id: 'cards',
     label: 'Cards',
     subtitle: 'Saved payment cards and card top-ups',
@@ -146,59 +146,77 @@ final List<AdminModule> adminModules = [
     permission: 'airtime.view',
     builder: (_) => const AirtimePage(),
   ),
-  _soon(
+  AdminModule(
     id: 'disputes',
     label: 'Disputes',
     subtitle: 'Complaints, disputes and investigations',
     icon: Icons.shield_outlined,
     section: NavSection.support,
     permission: 'disputes.view',
-    phase: 'Phase 8',
+    builder: (_) => const DisputesPage(),
   ),
-  _soon(
+  AdminModule(
     id: 'support',
     label: 'Support Tickets',
     subtitle: 'Manage and resolve customer support requests',
     icon: Icons.headset_mic_outlined,
     section: NavSection.support,
     permission: 'support.view',
-    phase: 'Phase 8',
+    builder: (_) => const SupportPage(),
   ),
-  _soon(
+  AdminModule(
+    id: 'moderation',
+    label: 'Content & Safety',
+    subtitle: 'Reported messages, Stories, For You posts, profiles and groups',
+    icon: Icons.flag_outlined,
+    section: NavSection.support,
+    permission: 'moderation.view',
+    builder: (_) => const ModerationPage(),
+  ),
+  AdminModule(
+    id: 'requests',
+    label: 'Account Requests',
+    subtitle: 'Name changes, unsupported countries and account closures',
+    icon: Icons.how_to_reg_outlined,
+    section: NavSection.support,
+    permission: 'requests.view',
+    builder: (_) => const RequestsPage(),
+  ),
+  AdminModule(
     id: 'notifications',
     label: 'Notifications',
     subtitle: 'Manage and send notifications to users',
     icon: Icons.notifications_none_rounded,
     section: NavSection.support,
     permission: 'notifications.view',
-    phase: 'Phase 9',
+    builder: (_) => const NotificationsPage(),
   ),
-  _soon(
+  AdminModule(
     id: 'reports',
     label: 'Reports',
     subtitle: 'View insights and generate reports across the platform',
     icon: Icons.insert_chart_outlined_rounded,
     section: NavSection.reports,
     permission: 'reports.view',
-    phase: 'Phase 10',
+    builder: (_) => const ReportsPage(),
   ),
-  _soon(
+  AdminModule(
     id: 'audit-logs',
     label: 'Audit Logs',
     subtitle: 'Track and review all admin activities and changes',
     icon: Icons.assignment_outlined,
     section: NavSection.reports,
     permission: 'audit.view',
-    phase: 'Phase 11',
+    builder: (_) => const AuditLogsPage(),
   ),
-  _soon(
+  AdminModule(
     id: 'settings',
     label: 'System Settings',
     subtitle: 'Manage and configure system preferences',
     icon: Icons.settings_outlined,
     section: NavSection.system,
     permission: 'settings.view',
-    phase: 'Phase 12',
+    builder: (_) => const SettingsPage(),
   ),
 ];
 
